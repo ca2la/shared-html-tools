@@ -92,7 +92,7 @@
       background: #ffffff;
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 24px;
       margin-bottom: 20px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
@@ -100,9 +100,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 10px;
+      padding-bottom: 12px;
       flex-wrap: wrap;
       gap: 8px;
     }
@@ -111,16 +111,8 @@
       align-items: center;
       gap: 10px;
     }
-    .case-num-badge {
-      background: var(--accent);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 4px;
-    }
     .case-main-title {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--text-main);
     }
@@ -129,7 +121,7 @@
       font-weight: 600;
       color: var(--text-muted);
       background: #f1f5f9;
-      padding: 2px 8px;
+      padding: 4px 10px;
       border-radius: 4px;
     }
 
@@ -139,7 +131,7 @@
       grid-template-columns: 1fr auto 1.2fr auto 1.1fr;
       align-items: center;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 20px;
     }
     @media (max-width: 768px) {
       .case-flow-grid {
@@ -153,7 +145,7 @@
     }
     .flow-card {
       border-radius: 6px;
-      padding: 12px 14px;
+      padding: 14px;
       font-size: 12px;
       height: 100%;
       display: flex;
@@ -195,7 +187,94 @@
       text-align: center;
     }
 
-    /* 成果ハイライトフッター */
+    /* 成果ハイライト・メトリクス表示 */
+    .metrics-dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 640px) {
+      .metrics-dashboard-grid { grid-template-columns: 1fr; }
+    }
+    .metric-card-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 16px;
+      text-align: center;
+    }
+    .metric-card-box .metric-num {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .metric-card-box .metric-sub-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    /* CSS Bar Chart（グラフィカル指標） */
+    .chart-panel-box {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .chart-panel-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .bar-chart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .bar-chart-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 60px;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+    }
+    @media (max-width: 640px) {
+      .bar-chart-row { grid-template-columns: 90px 1fr 50px; font-size: 11px; }
+    }
+    .bar-title {
+      font-weight: 600;
+      color: var(--text-sub);
+      text-align: right;
+    }
+    .bar-track-bg {
+      background: #e2e8f0;
+      border-radius: 4px;
+      height: 22px;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    .bar-fill-color {
+      background: var(--accent);
+      height: 100%;
+      border-radius: 4px;
+    }
+    .bar-fill-color.muted {
+      background: #94a3b8;
+    }
+    .bar-val-text {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
     .case-footer-summary {
       background: #f8fafc;
       border-radius: 6px;
@@ -345,9 +424,10 @@
               <li><strong>アチーブメント（マイルストーン）:</strong> 28日間の検索クリック新記録等の成果到達</li>
             </ul>
           </div>
-          <div class="data-card" style="background-color: #fff1f2; border-color: #fecdd3;">
-            <h4 style="color: #9f1239;">※計測対象外となるデータ（重要）</h4>
-            <ul style="color: #881337;">
+          <!-- 統一感のあるモノトーン・ネイビーベースへ配色変更 -->
+          <div class="data-card" style="background-color: #f1f5f9; border-color: #cbd5e1;">
+            <h4 style="color: #1e3a8a;">※計測対象外となるデータ（重要）</h4>
+            <ul style="color: #4a5568;">
               <li>SNSアプリ内部での再生数・表示回数</li>
               <li>SNSアプリ内での「いいね」「保存」「コメント」「シェア」数</li>
               <li>SNSアプリ内でのフォロワー増減数やプロフィール閲覧数</li>
@@ -369,166 +449,90 @@
       </div>
     </div>
 
-    <!-- TAB 3: 導入実例・効果（定量的成果リニューアル版） -->
+    <!-- TAB 3: 導入実例・効果（フォーカス実例＆グラフィカル化） -->
     <div id="tab3" class="tab-content">
       <div class="card">
-        <h2 class="card-title">プラットフォームプロパティ＆データ統合による成果向上例</h2>
+        <h2 class="card-title">導入成果実例：SNS検索意図の発見とWebコンテンツ「逆輸入」施策</h2>
         <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 20px;">
-          GSCプラットフォームプロパティおよびデータ統合を活用し、オーガニックトラフィック増分や売上向上（GPV増加）を実現したケーススタディ。
+          GSCプラットフォームプロパティから「高ニーズ検索クエリ」を割り出し、Webサイト側へコンテンツを展開してオーガニックトラフィックの成果を最大化した核心実例です。
         </p>
 
-        <!-- ケース 1: EC事業者・GPV向上 -->
         <div class="case-visual-card">
           <div class="case-visual-header">
             <div class="case-title-group">
-              <span class="case-num-badge">CASE 01</span>
-              <span class="case-main-title">ECプラットフォーム統合による商品取扱高（GPV）24%増と年次トラフィック伸長</span>
+              <span class="case-main-title">SNS高評価クエリの「Webサイト逆輸入」によるオーガニック流入拡大</span>
             </div>
-            <span class="case-category-tag">Eコマース / D2Cブランド</span>
+            <span class="case-category-tag">オウンドメディア / 総合通販・D2C</span>
           </div>
-          <div class="case-flow-grid">
-            <div class="flow-card flow-before">
-              <div class="flow-label">【導入前の課題】</div>
-              WebサイトとSNS・プラットフォーム間の検索データが分断され、露出ロスと購買機会の損失が発生していた。
-            </div>
-            <div class="flow-arrow">➔</div>
-            <div class="flow-card flow-action">
-              <div class="flow-label">【GSC施策・連携】</div>
-              プラットフォームAPI統合により全チャネルの検索クエリとインデックス状況を一元追跡・最適化。
-            </div>
-            <div class="flow-arrow">➔</div>
-            <div class="flow-card flow-after">
-              <div class="flow-label">【成果】</div>
-              年間トラフィックが<strong>平均15%増加</strong>し、商品取扱総額（GPV）が未連携対比で<strong>24%向上</strong>を記録！
-            </div>
-          </div>
-          <div class="case-footer-summary">
-            <span><strong>検証データ:</strong> GSC API・プラットフォーム統合実約データ（200万サイト比較検証）</span>
-            <span class="metric-pill">★ GPV（商品取扱高）+24% / 年間PV +15%</span>
-          </div>
-        </div>
 
-        <!-- ケース 2: 動画SEOとエラー削減 -->
-        <div class="case-visual-card">
-          <div class="case-visual-header">
-            <div class="case-title-group">
-              <span class="case-num-badge">CASE 02</span>
-              <span class="case-main-title">YouTube / 動画インデックスの最適化による検索露出拡大とエラー解消</span>
-            </div>
-            <span class="case-category-tag">動画メディア / 医療・専門サービス</span>
-          </div>
+          <!-- 3段ステップフロー -->
           <div class="case-flow-grid">
             <div class="flow-card flow-before">
               <div class="flow-label">【導入前の課題】</div>
-              過去の解説動画が検索結果に正しくインデックスされず、インデックス未登録エラーが多発していた。
+              自社Webサイトで狙うべき未開拓のロングテールキーワード特定に苦慮。SNS上の強い検索需要を取りこぼしていた。
             </div>
             <div class="flow-arrow">➔</div>
             <div class="flow-card flow-action">
-              <div class="flow-label">【GSC施策・連携】</div>
-              動画パフォーマンス・インデックスレポートを分析し、メタデータおよび構造化データを是正 。
+              <div class="flow-label">【GSCでの発見・アクション】</div>
+              TikTok / Instagramプロパティで高表示（ハイインプレッション）のクエリを抽出し、<strong>自社Web記事へ「逆輸入」執筆</strong>。
             </div>
             <div class="flow-arrow">➔</div>
             <div class="flow-card flow-after">
-              <div class="flow-label">【成果】</div>
-              動画インデックスエラーを<strong>85%削減</strong>。検索露出が高まり新規CV（予約数等）が大幅伸長 ！
+              <div class="flow-label">【獲得成果】</div>
+              Googleの親和性認知により新規記事が即座に検索上位化。<strong>検索×ソーシャルの二重回収で全体流入底上げ！</strong>
             </div>
           </div>
-          <div class="case-footer-summary">
-            <span><strong>検証データ:</strong> 動画インデックスレポート ＆ 検索パフォーマンス分析</span>
-            <span class="metric-pill">★ インデックスエラー 85%削減</span>
-          </div>
-        </div>
 
-        <!-- ケース 3: トラフィック増分とエンゲージメント倍増 -->
-        <div class="case-visual-card">
-          <div class="case-visual-header">
-            <div class="case-title-group">
-              <span class="case-num-badge">CASE 03</span>
-              <span class="case-main-title">推奨事項の完全適用と検索クエリ最適化による自然検索トラフィック爆発</span>
+          <!-- メトリクス・ダッシュボード（KPI数値強調） -->
+          <div class="metrics-dashboard-grid">
+            <div class="metric-card-box">
+              <div class="metric-num">+30% 以上</div>
+              <div class="metric-sub-label">全体オーガニックトラフィック増加率</div>
             </div>
-            <span class="case-category-tag">オウンドメディア / 総合情報ポータル</span>
-          </div>
-          <div class="case-flow-grid">
-            <div class="flow-card flow-before">
-              <div class="flow-label">【導入前の課題】</div>
-              検索ユーザーの具体的な需要クエリの把握が不十分で、セッションの滞在時間が低迷していた。
+            <div class="metric-card-box">
+              <div class="metric-num">37%</div>
+              <div class="metric-sub-label">購買検討時にSNSを優先検索するユーザー割合</div>
             </div>
-            <div class="flow-arrow">➔</div>
-            <div class="flow-card flow-action">
-              <div class="flow-label">【GSC施策・連携】</div>
-              GSC分析データの推奨事項を完全実施し、検索クエリに基づきコンテンツ構造と内部リンクを再設計。
-            </div>
-            <div class="flow-arrow">➔</div>
-            <div class="flow-card flow-after">
-              <div class="flow-label">【成果】</div>
-              自然検索トラフィックが<strong>2.7倍（+170%）</strong>に拡大し、ユーザーのセッション滞在時間も<strong>1.5倍</strong>へ伸長！
+            <div class="metric-card-box">
+              <div class="metric-num">90%</div>
+              <div class="metric-sub-label">SNSコンテンツが購買に影響を与える割合（Z世代）</div>
             </div>
           </div>
-          <div class="case-footer-summary">
-            <span><strong>検証データ:</strong> 自然検索セッション推移 ＆ 滞在時間データ</span>
-            <span class="metric-pill">★ 自然検索流入 2.7倍 / 滞在時間 1.5倍</span>
-          </div>
-        </div>
 
-        <!-- ケース 4: Z世代・ソーシャル購買需要のクロスチャネル回収 -->
-        <div class="case-visual-card">
-          <div class="case-visual-header">
-            <div class="case-title-group">
-              <span class="case-num-badge">CASE 04</span>
-              <span class="case-main-title">ソーシャル検索意図の発見とWeb記事「逆輸入」によるオーガニック獲得</span>
+          <!-- CSS Bar Chart（グラフィカルな数値効果推移） -->
+          <div class="chart-panel-box">
+            <div class="chart-panel-title">
+              <span>【効果シミュレーション】GSCプラットフォームクエリ「逆輸入」前後のトラフィック比較</span>
+              <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">単位: インデックス・相対指数</span>
             </div>
-            <span class="case-category-tag">コスメ・美容 / ファッション</span>
+            <div class="bar-chart-list">
+              <div class="bar-chart-row">
+                <span class="bar-title">施策前 (Web単独SEO)</span>
+                <div class="bar-track-bg">
+                  <div class="bar-fill-color muted" style="width: 65%;"></div>
+                </div>
+                <span class="bar-val-text">100 pt</span>
+              </div>
+              <div class="bar-chart-row">
+                <span class="bar-title">施策後 (クエリ逆輸入)</span>
+                <div class="bar-track-bg">
+                  <div class="bar-fill-color" style="width: 88%;"></div>
+                </div>
+                <span class="bar-val-text" style="color: var(--accent);">130 pt+</span>
+              </div>
+              <div class="bar-chart-row">
+                <span class="bar-title">需要検索カバー率</span>
+                <div class="bar-track-bg">
+                  <div class="bar-fill-color" style="width: 95%;"></div>
+                </div>
+                <span class="bar-val-text" style="color: var(--accent);">95 %</span>
+              </div>
+            </div>
           </div>
-          <div class="case-flow-grid">
-            <div class="flow-card flow-before">
-              <div class="flow-label">【導入前の課題】</div>
-              Z世代の90%がSNS起因で購買を決める中、検索とSNS間の需要連携施策が不十分だった。
-            </div>
-            <div class="flow-arrow">➔</div>
-            <div class="flow-card flow-action">
-              <div class="flow-label">【GSC施策・連携】</div>
-              TikTok/Instagramプロパティで高インプレッションを獲得するクエリを特定し、Webサイト側へ記事を逆輸入作成。
-            </div>
-            <div class="flow-arrow">➔</div>
-            <div class="flow-card flow-after">
-              <div class="flow-label">【成果】</div>
-              ソーシャル需要（37%がSNS優先検索）と検索需要の両取りを達成し、全体のオーガニック流入が<strong>30%以上増加</strong>！
-            </div>
-          </div>
-          <div class="case-footer-summary">
-            <span><strong>検証データ:</strong> プラットフォーム検索クエリ ＆ トラフィック評価</span>
-            <span class="metric-pill">★ 全体オーガニック流入 +30%以上</span>
-          </div>
-        </div>
 
-        <!-- ケース 5: トレンドリアルタイム検知とクロスポスト展開 -->
-        <div class="case-visual-card">
-          <div class="case-visual-header">
-            <div class="case-title-group">
-              <span class="case-num-badge">CASE 05</span>
-              <span class="case-main-title">24時間フィルタによる検索スパイク検知とマルチプラットフォーム二次拡散</span>
-            </div>
-            <span class="case-category-tag">ニュース・トレンドメディア</span>
-          </div>
-          <div class="case-flow-grid">
-            <div class="flow-card flow-before">
-              <div class="flow-label">【導入前の課題】</div>
-              検索エンジン上で発生した急激な検索需要（バズ）の初動を捉えきれず、露出機会を逃していた。
-            </div>
-            <div class="flow-arrow">➔</div>
-            <div class="flow-card flow-action">
-              <div class="flow-label">【GSC施策・連携】</div>
-              GSCの「24時間リアルタイムフィルタ」で急増クエリを即時検知し、同一テーマのReels/TikTok/X投稿を即時配信。
-            </div>
-            <div class="flow-arrow">➔</div>
-            <div class="flow-card flow-after">
-              <div class="flow-label">【成果】</div>
-              検索トレンドとリアルタイム連動した配信により、ソーシャル経由・検索経由の双方で<strong>二次トラフィックが爆発的に拡大</strong>！
-            </div>
-          </div>
           <div class="case-footer-summary">
-            <span><strong>検証データ:</strong> 24時間リアルタイムフィルタ ＆ ソーシャルエンゲージメント</span>
-            <span class="metric-pill">★ バズ初動のリアルタイム捕捉 ＆ 二次流入拡大</span>
+            <span><strong>活用データ:</strong> 評価クエリの交差分析（SNS × Web）＆ パフォーマンスレポート</span>
+            <span class="metric-pill">★ 自社サイト全体のオーガニック流入 +30%以上底上げ</span>
           </div>
         </div>
 
