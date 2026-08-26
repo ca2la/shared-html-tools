@@ -14,6 +14,10 @@
       --text-muted: #718096;
       --accent: #1e3a8a;
       --accent-light: #eff6ff;
+      --accent-border: #bfdbfe;
+      --success-bg: #f0fdf4;
+      --success-text: #166534;
+      --success-border: #bbf7d0;
       --radius: 8px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
@@ -32,6 +36,8 @@
     .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
     .card-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
     .card-title::before { content: ""; display: inline-block; width: 4px; height: 16px; background-color: var(--accent); border-radius: 2px; }
+
+    /* ダイアグラム共通 */
     .diagram-container { background-color: #f1f5f9; border: 1px dashed #cbd5e1; border-radius: var(--radius); padding: 16px; margin-bottom: 20px; }
     .diagram-title { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 12px; text-transform: uppercase; }
     .diagram-compare-illust { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -79,15 +85,139 @@
     .data-card ul li { margin-bottom: 6px; padding-left: 12px; position: relative; }
     .data-card ul li::before { content: "✔"; position: absolute; left: 0; color: var(--accent); font-size: 10px; }
 
-    .case-list { display: flex; flex-direction: column; gap: 16px; }
-    .case-item { border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px; background-color: #ffffff; }
-    .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
-    .case-title { font-size: 15px; font-weight: 700; color: var(--text-main); }
-    .case-tag { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; background-color: var(--accent-light); color: var(--accent); border: 1px solid rgba(30, 58, 138, 0.2); }
-    .case-body { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
-    .case-body strong { color: var(--text-main); }
-    .case-metrics { display: flex; gap: 12px; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border-color); font-size: 12px; }
-    .metric-badge { background: #f1f5f9; padding: 4px 10px; border-radius: 4px; font-weight: 600; color: var(--accent); }
+    /* ==============================================================
+       ビジュアル化された実例スタイル (TAB 3 Visuals)
+    ============================================================== */
+    .case-visual-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .case-visual-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .case-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .case-num-badge {
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .case-main-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .case-category-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: #f1f5f9;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* 3段ステップフロー (Before ➔ GSC Action ➔ After) */
+    .case-flow-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1.2fr auto 1.1fr;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 768px) {
+      .case-flow-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .case-flow-arrow {
+        transform: rotate(90deg);
+        margin: 0 auto;
+      }
+    }
+    .flow-card {
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 12px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .flow-before {
+      background-color: #f8fafc;
+      border: 1px solid var(--border-color);
+      color: var(--text-sub);
+    }
+    .flow-action {
+      background-color: var(--accent-light);
+      border: 1px solid var(--accent-border);
+      color: var(--text-main);
+    }
+    .flow-after {
+      background-color: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+    }
+    .flow-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .flow-before .flow-label { color: var(--text-muted); }
+    .flow-action .flow-label { color: var(--accent); }
+    .flow-after .flow-label { color: var(--success-text); }
+    .flow-arrow {
+      color: var(--text-muted);
+      font-weight: bold;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* 成果ハイライトフッター */
+    .case-footer-summary {
+      background: #f8fafc;
+      border-radius: 6px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+    }
+    .metric-pill {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
 
     .benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     @media (max-width: 768px) { .benefits-grid { grid-template-columns: 1fr; } }
@@ -239,82 +369,169 @@
       </div>
     </div>
 
-    <!-- TAB 3: 導入実例・効果 -->
+    <!-- TAB 3: 導入実例・効果（ビジュアル化リニューアル） -->
     <div id="tab3" class="tab-content">
       <div class="card">
         <h2 class="card-title">実際に効果・成果を獲得した5つの実例ケーススタディ</h2>
-        <div class="case-list">
-          <div class="case-item">
-            <div class="case-header">
-              <span class="case-title">1. マーケティング予算獲得とSNS運用ROIの定量証明</span>
-              <span class="case-tag">事業会社 / マーケティング部</span>
+        <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 20px;">
+          GSCプラットフォームプロパティを活用し、SNS運用とWebマーケティングを直結させて成果を創出した具体事例です。
+        </p>
+
+        <!-- ケース 1 -->
+        <div class="case-visual-card">
+          <div class="case-visual-header">
+            <div class="case-title-group">
+              <span class="case-num-badge">CASE 01</span>
+              <span class="case-main-title">マーケティング予算獲得とSNS運用ROIの定量証明</span>
             </div>
-            <div class="case-body">
-              従来、フォロワー数やいいね数など定性的になりがちだったInstagram運用に対し、プラットフォームプロパティを導入。Google検索から自社Instagramアカウントへ<strong>毎月数千件規模のオーガニッククリックが発生している事実</strong>を明確な数値として抽出。<br>
-              SNSがGoogle検索上の潜在顧客を捕獲する「獲得チャネル」であることを社内意思決定者に示し、<strong>SNS運用チームの増員および動画制作予算の獲得に成功</strong>しました。
+            <span class="case-category-tag">事業会社 / マーケティング部</span>
+          </div>
+          <div class="case-flow-grid">
+            <div class="flow-card flow-before">
+              <div class="flow-label">【従来課題】</div>
+              フォロワー数・いいね等のみで、売上や集客への直接貢献（ROI）を社内に証明しにくかった。
             </div>
-            <div class="case-metrics">
-              <span class="metric-badge">成果: SNS予算承認・体制拡大</span>
-              <span class="metric-badge">活用データ: パフォーマンスレポート（月間クリック数）</span>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card flow-action">
+              <div class="flow-label">【GSCでの発見・アクション】</div>
+              Instagramへ<strong>Google検索から月間数千クリックの潜在流入</strong>がある事実を数値で可視化。
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card flow-after">
+              <div class="flow-label">【獲得成果】</div>
+              SNS＝獲得チャネルと経営陣が納得。<strong>動画制作予算＆運用チーム増員の承認を獲得！</strong>
             </div>
           </div>
-          <div class="case-item">
-            <div class="case-header">
-              <span class="case-title">2. 検索需要に基づく「リバイバル動画」の特定とWeb予約率向上</span>
-              <span class="case-tag">医療法人 / クリニック</span>
-            </div>
-            <div class="case-body">
-              「ページ」および「クエリ」タブの分析により、過去にYouTubeへ投稿した「大腸カメラ事前準備（下剤の飲み方）」動画が、アプリ内再生数は落ち着いているものの<strong>Google検索からは長期間高いクリック数と上位表示を維持</strong>している事実を発見。<br>
-              切実な検索需要にマッチした資産動画であると特定し、該当動画をアカウントトップへ固定表示。さらに最新の注意事項を追記した補足版を展開したことで、<strong>検索経由からの新規Web予約率が大幅向上</strong>しました。
-            </div>
-            <div class="case-metrics">
-              <span class="metric-badge">成果: 新規Web予約獲得率の大幅UP</span>
-              <span class="metric-badge">活用データ: ページ別クリック数 & 検索クエリ</span>
-            </div>
-          </div>
-          <div class="case-item">
-            <div class="case-header">
-              <span class="case-title">3. ブランドSERP（検索結果画面）の複数面占有とプロフィールSEO</span>
-              <span class="case-tag">コスメ・美容ブランド</span>
-            </div>
-            <div class="case-body">
-              InstagramコンテンツがGoogle検索トップ10に入るケースのうち、58%が個別投稿ではなく「アカウントTOP（プロフィール）」であるデータに着目。自社Instagramアカウントが「韓国コスメ トレンド」等の一般キーワードで表示されていることを可視化。<br>
-              クエリデータに基づき、Instagramのプロフィール文（BIO）やアカウント名を検索キーワードに最適化（プロフィールSEO）。結果として<strong>Google検索1ページ目に公式サイトと公式Instagramが並列表示され、競合を排除した面占有を達成</strong>しました。
-            </div>
-            <div class="case-metrics">
-              <span class="metric-badge">成果: 検索1ページ目の面占有＆指名獲得</span>
-              <span class="metric-badge">活用データ: プロフィール流入クエリ分析</span>
-            </div>
-          </div>
-          <div class="case-item">
-            <div class="case-header">
-              <span class="case-title">4. SNS高評価クエリの「Webサイト側への逆輸入」によるSEO向上</span>
-              <span class="case-tag">オウンドメディア / 総合通販</span>
-            </div>
-            <div class="case-body">
-              自社TikTokプロパティを分析し、自社Webサイト側では未対策だったロングテールキーワードでショート動画が高インプレッションを獲得していることを特定。Googleが自社SNSに対して該当ジャンルの権威性を認めていると判断。<br>
-              その評価クエリをテーマにした<strong>新規Web記事コンテンツを自社サイト内に「逆輸入」して執筆</strong>。すでにGoogleから親和性が高いと認知されていたため、新設したWebページも即座に検索上位を獲得し、<strong>サイト全体のオーガニック流入数を底上げ</strong>しました。
-            </div>
-            <div class="case-metrics">
-              <span class="metric-badge">成果: 自社サイトSEOオーガニック流入底上げ</span>
-              <span class="metric-badge">活用データ: 評価クエリの交差分析</span>
-            </div>
-          </div>
-          <div class="case-item">
-            <div class="case-header">
-              <span class="case-title">5. 24時間フィルタによるトレンド急増検知と即時クロスポスト</span>
-              <span class="case-tag">情報系Webメディア</span>
-            </div>
-            <div class="case-body">
-              GSCの「24時間フィルタ」を用いて日次モニタリングを実施。YouTubeやXの投稿に対して、Google検索からのトラフィックが急増した瞬間をリアルタイム検知する運用を構築。<br>
-              スパイクを検知した際、<strong>即座にその検索キーワードを反映した投稿をInstagram ReelsやTikTokへ横展開（クロスポスト）</strong>。検索トレンドと完全に同期したマルチプラットフォーム展開により、爆発的な二次トラフィックを獲得しました。
-            </div>
-            <div class="case-metrics">
-              <span class="metric-badge">成果: スパイク波及による二次トラフィック拡大</span>
-              <span class="metric-badge">活用データ: 24時間リアルタイムフィルタ</span>
-            </div>
+          <div class="case-footer-summary">
+            <span><strong>活用データ:</strong> パフォーマンスレポート（月間検索クリック数推移）</span>
+            <span class="metric-pill">★ SNS予算承認 ＆ 体制拡大</span>
           </div>
         </div>
+
+        <!-- ケース 2 -->
+        <div class="case-visual-card">
+          <div class="case-visual-header">
+            <div class="case-title-group">
+              <span class="case-num-badge">CASE 02</span>
+              <span class="case-main-title">検索需要に基づく「リバイバル動画」特定とWeb予約向上</span>
+            </div>
+            <span class="case-category-tag">医療法人 / クリニック</span>
+          </div>
+          <div class="case-flow-grid">
+            <div class="flow-card flow-before">
+              <div class="flow-label">【従来課題】</div>
+              過去のYouTube動画（下剤の飲み方等）は、アプリ内再生数が落ち着き埋もれていた。
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card flow-action">
+              <div class="flow-label">【GSCでの発見・アクション】</div>
+              Google検索から<strong>長期間高クリックを維持する「検索資産動画」</strong>と特定し、トップ固定＆補足改訂。
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card flow-after">
+              <div class="flow-label">【獲得成果】</div>
+              切実な検索ユーザーを的確に誘導し、<strong>検索経由での新規Web診療予約率が大幅UP！</strong>
+            </div>
+          </div>
+          <div class="case-footer-summary">
+            <span><strong>活用データ:</strong> ページ別クリック数 ＆ 検索クエリ一覧</span>
+            <span class="metric-pill">★ 新規Web予約獲得率の大幅向上</span>
+          </div>
+        </div>
+
+        <!-- ケース 3 -->
+        <div class="case-visual-card">
+          <div class="case-visual-header">
+            <div class="case-title-group">
+              <span class="case-num-badge">CASE 03</span>
+              <span class="case-main-title">ブランドSERPの複数面占有とプロフィールSEO</span>
+            </div>
+            <span class="case-category-tag">コスメ・美容ブランド</span>
+          </div>
+          <div class="case-flow-grid">
+            <div class="flow-card flow-before">
+              <div class="flow-label">【従来課題】</div>
+              Googleの一般検索結果（SERP）で競合他社サイトに埋もれ、露出が限定的だった。
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card flow-action">
+              <div class="flow-label">【GSCでの発見・アクション】</div>
+              Instagramプロフィールの検索流入データをもとに、<strong>BIO（プロフィール文）をクエリ最適化</strong>。
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card flow-after">
+              <div class="flow-label">【獲得成果】</div>
+              検索1ページ目に<strong>公式サイトと公式Instagramが並列表示され、競合を排除した面占有を達成！</strong>
+            </div>
+          </div>
+          <div class="case-footer-summary">
+            <span><strong>活用データ:</strong> プロフィール流入クエリ ＆ 表示順位分析</span>
+            <span class="metric-pill">★ 検索結果1ページ目の面占有＆指名獲得</span>
+          </div>
+        </div>
+
+        <!-- ケース 4 -->
+        <div class="case-visual-card">
+          <div class="case-visual-header">
+            <div class="case-title-group">
+              <span class="case-num-badge">CASE 04</span>
+              <span class="case-main-title">SNS高評価クエリの「Webサイト側への逆輸入」によるSEO向上</span>
+            </div>
+            <span class="case-category-tag">オウンドメディア / 総合通販</span>
+          </div>
+          <div class="case-flow-grid">
+            <div class="flow-card flow-before">
+              <div class="flow-label">【従来課題】</div>
+              自社Webサイトで狙うべき未開拓のロングテールキーワードの特定に苦慮していた。
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card flow-action">
+              <div class="flow-label">【GSCでの発見・アクション】</div>
+              TikTokショート動画が高評価を得ているクエリを、<strong>自社Web記事コンテンツへ「逆輸入」執筆</strong>。
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card flow-after">
+              <div class="flow-label">【獲得成果】</div>
+              Googleの親和性認知により新規記事が即座に検索上位化。<strong>サイト全体の流入数を底上げ！</strong>
+            </div>
+          </div>
+          <div class="case-footer-summary">
+            <span><strong>活用データ:</strong> 評価クエリの交差分析（SNS × Web）</span>
+            <span class="metric-pill">★ 自社サイト全体のオーガニック流入底上げ</span>
+          </div>
+        </div>
+
+        <!-- ケース 5 -->
+        <div class="case-visual-card">
+          <div class="case-visual-header">
+            <div class="case-title-group">
+              <span class="case-num-badge">CASE 05</span>
+              <span class="case-main-title">24時間フィルタによるトレンド急増検知と即時クロスポスト</span>
+            </div>
+            <span class="case-category-tag">情報系Webメディア</span>
+          </div>
+          <div class="case-flow-grid">
+            <div class="flow-card flow-before">
+              <div class="flow-label">【従来課題】</div>
+              Google検索上でのリアルタイムな需要急増（バズ・スパイク）の初動に乗り遅れていた。
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card flow-action">
+              <div class="flow-label">【GSCでの発見・アクション】</div>
+              GSCの「24時間フィルタ」で検索急増を即時検知し、<strong>同一テーマをReels / TikTokへ即座に横展開</strong>。
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card flow-after">
+              <div class="flow-label">【獲得成果】</div>
+              検索トレンドと完全連動したマルチプラットフォーム配信により、<strong>爆発的な二次流入を獲得！</strong>
+            </div>
+          </div>
+          <div class="case-footer-summary">
+            <span><strong>活用データ:</strong> 24時間リアルタイムフィルタ（スパイク検知）</span>
+            <span class="metric-pill">★ トレンド連動による二次トラフィック爆発</span>
+          </div>
+        </div>
+
       </div>
     </div>
 
