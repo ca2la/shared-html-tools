@@ -39,31 +39,24 @@
     // ==============================================================
     // 設定: ご自身のGitHubアカウント名とリポジトリ名
     // ==============================================================
-    const GITHUB_USER = 'ca2la'; // ← ここを書き換えてください
+    const GITHUB_USER = 'ca2la'; 
     const REPO_NAME   = 'shared-html-tools';
     
-    // 自身のファイル名を自動判定 (GSC_platform_property_sugest.html)
+    // 自身のファイル名を自動判定
     const currentFileName = window.location.pathname.split('/').pop() || 'GSC_platform_property_sugest.html';
     const REMOTE_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${REPO_NAME}/main/${currentFileName}`;
     const CACHE_KEY  = `cached_${currentFileName}`;
 
     async function bootstrap() {
       try {
-        // キャッシュを防ぐタイムスタンプ付きでGitHubから最新版を取得
         const response = await fetch(`${REMOTE_URL}?t=${Date.now()}`, { cache: 'no-store' });
         if (!response.ok) throw new Error('Fetch failed: ' + response.status);
         
         const latestHtml = await response.text();
-        
-        // 取得した最新HTMLをローカルストレージに保存
         localStorage.setItem(CACHE_KEY, latestHtml);
-
-        // 画面を最新のHTMLで丸ごと再描画
         renderApp(latestHtml, '● 最新版に同期完了');
       } catch (err) {
         console.warn('最新版の取得をスキップ（オフラインまたは未設定）:', err);
-        
-        // キャッシュがあればキャッシュから描画、なければ内蔵のデフォルトHTMLを描画
         const cachedHtml = localStorage.getItem(CACHE_KEY);
         if (cachedHtml) {
           renderApp(cachedHtml, '▲ キャッシュ版で動作中');
@@ -78,7 +71,6 @@
       document.write(htmlContent);
       document.close();
 
-      // 右下に小さな同期ステータスバッジを表示
       window.addEventListener('DOMContentLoaded', () => {
         const badge = document.createElement('div');
         badge.style.cssText = 'position:fixed;bottom:10px;right:10px;font-size:10px;background:rgba(30,58,138,0.85);color:#fff;padding:3px 8px;border-radius:4px;z-index:9999;font-family:sans-serif;pointer-events:none;';
@@ -87,7 +79,6 @@
       });
     }
 
-    // 起動
     bootstrap();
 
     // ==============================================================
@@ -118,8 +109,8 @@
     .badge { display: inline-block; background: var(--accent); color: #ffffff; font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 0.05em; }
     header h1 { font-size: 24px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
     header p { color: var(--text-sub); font-size: 14px; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid var(--border-color); }
-    .tab-btn { background: none; border: none; padding: 12px 20px; font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer; position: relative; bottom: -2px; border-bottom: 2px solid transparent; transition: all 0.2s ease; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid var(--border-color); overflow-x: auto; }
+    .tab-btn { background: none; border: none; padding: 12px 18px; font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer; position: relative; bottom: -2px; border-bottom: 2px solid transparent; transition: all 0.2s ease; white-space: nowrap; }
     .tab-btn:hover { color: var(--text-main); }
     .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
     .tab-content { display: none; }
@@ -153,21 +144,6 @@
     .venn-center-hub .hub-title { font-size: 10px; font-weight: 800; color: var(--accent); white-space: nowrap; }
     .venn-center-hub .hub-sub { font-size: 9px; font-weight: 600; color: var(--text-sub); background: #f1f5f9; padding: 1px 6px; border-radius: 3px; white-space: nowrap; }
     .illust-desc { font-size: 11px; color: var(--text-sub); line-height: 1.4; }
-    .diagram-flow-grid { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 8px; text-align: center; }
-    .diagram-arrow { color: var(--text-muted); font-size: 14px; font-weight: bold; }
-    .diagram-node { background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 8px; }
-    .diagram-node.accent-node { border-color: var(--accent); background-color: var(--accent-light); }
-    .diagram-node .node-title { font-size: 11px; font-weight: 700; color: var(--text-main); }
-    .diagram-node .node-desc { font-size: 10px; color: var(--text-sub); }
-    .diagram-steps { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 8px; text-align: center; }
-    .diagram-step-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; }
-    .diagram-step-num { font-size: 10px; font-weight: 800; color: var(--accent); }
-    .diagram-step-label { font-size: 11px; font-weight: 700; color: var(--text-main); }
-    @media (max-width: 640px) {
-      .diagram-compare-illust { grid-template-columns: 1fr; }
-      .diagram-flow-grid, .diagram-steps { grid-template-columns: 1fr; gap: 6px; }
-      .diagram-arrow { transform: rotate(90deg); margin: 2px 0; }
-    }
     .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 640px) { .comparison-grid { grid-template-columns: 1fr; } }
     .box { border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px; background-color: #ffffff; }
@@ -180,6 +156,27 @@
     .data-table th, .data-table td { padding: 12px 16px; border-bottom: 1px solid var(--border-color); }
     .data-table th { background-color: #f1f5f9; color: var(--text-main); font-weight: 600; }
     .data-table td { color: var(--text-sub); }
+    
+    /* 取得データグリッド */
+    .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 640px) { .data-grid { grid-template-columns: 1fr; } }
+    .data-card { border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px; background-color: #ffffff; }
+    .data-card h4 { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .data-card ul { list-style: none; font-size: 12px; color: var(--text-sub); }
+    .data-card ul li { margin-bottom: 6px; padding-left: 12px; position: relative; }
+    .data-card ul li::before { content: "✔"; position: absolute; left: 0; color: var(--accent); font-size: 10px; }
+
+    /* 実例カード */
+    .case-list { display: flex; flex-direction: column; gap: 16px; }
+    .case-item { border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px; background-color: #ffffff; }
+    .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+    .case-title { font-size: 15px; font-weight: 700; color: var(--text-main); }
+    .case-tag { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; background-color: var(--accent-light); color: var(--accent); border: 1px solid rgba(30, 58, 138, 0.2); }
+    .case-body { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+    .case-body strong { color: var(--text-main); }
+    .case-metrics { display: flex; gap: 12px; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border-color); font-size: 12px; }
+    .metric-badge { background: #f1f5f9; padding: 4px 10px; border-radius: 4px; font-weight: 600; color: var(--accent); }
+
     .benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     @media (max-width: 768px) { .benefits-grid { grid-template-columns: 1fr; } }
     .benefit-item { border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px; }
@@ -203,11 +200,13 @@
 
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab(event, 'tab1')">概要と背景</button>
-      <button class="tab-btn" onclick="switchTab(event, 'tab2')">データ比較</button>
-      <button class="tab-btn" onclick="switchTab(event, 'tab3')">運用上のメリット</button>
-      <button class="tab-btn" onclick="switchTab(event, 'tab4')">導入ステップ</button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab2')">取得できるデータ</button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab3')">導入実例・効果</button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab4')">運用上のメリット</button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab5')">導入ステップ</button>
     </div>
 
+    <!-- TAB 1: 概要と背景 -->
     <div id="tab1" class="tab-content active">
       <div class="card">
         <h2 class="card-title">従来のプロパティと新機能の構造的違い</h2>
@@ -222,7 +221,7 @@
                   <span>Google検索</span>
                 </div>
                 <div class="flow-arrow-box">
-                  <span class="flow-arrow-text">Google検索からのトラフィックデータをSearch Consoleで集積</span>
+                  <span class="flow-arrow-text">Google検索からのトラフィックデータを集積</span>
                   <span class="flow-arrow-icon">↓</span>
                 </div>
                 <div class="single-hub-badge">
@@ -273,46 +272,150 @@
       </div>
     </div>
 
+    <!-- TAB 2: 取得できるデータ -->
     <div id="tab2" class="tab-content">
       <div class="card">
-        <h2 class="card-title">可視化データの役割と計測範囲の違い</h2>
-        <div class="diagram-container">
-          <div class="diagram-title">計測領域のポジショニングマップ</div>
-          <div class="diagram-flow-grid">
-            <div class="diagram-node"><div class="node-title">SNSアプリ内</div><div class="node-desc">タイムライン / 検索</div></div>
-            <div class="diagram-arrow">→</div>
-            <div class="diagram-node"><div class="node-title">既存アナリティクス</div><div class="node-desc">エンゲージメント測定</div></div>
-            <div class="diagram-arrow">vs</div>
-            <div class="diagram-node accent-node"><div class="node-title">Google検索領域</div><div class="node-desc">検索クエリ / 潜在顧客</div></div>
+        <h2 class="card-title">プラットフォームプロパティで取得可能なデータ項目一覧</h2>
+        <div class="data-grid">
+          <div class="data-card">
+            <h4>パフォーマンス指標</h4>
+            <ul>
+              <li><strong>検索クエリ（キーワード）:</strong> ユーザーがGoogleで検索した具体的なキーワード</li>
+              <li><strong>クリック数:</strong> SERPsからSNS投稿・アカウントへアクセスされた回数</li>
+              <li><strong>表示回数（インプレッション）:</strong> 検索結果やDiscover等に投稿が表示された回数</li>
+              <li><strong>平均CTR / 平均掲載順位:</strong> 検索結果におけるクリック率と表示平均順位</li>
+            </ul>
+          </div>
+          <div class="data-card">
+            <h4>分析切り口・フィルタ</h4>
+            <ul>
+              <li><strong>ページ / 投稿別:</strong> 最も検索からクリックされている動画・リール・プロフィール</li>
+              <li><strong>検索チャネル別:</strong> Google検索結果、Google Discover、Googleニュース</li>
+              <li><strong>24時間リアルタイムフィルタ:</strong> 直近24時間でのアクセス急増（スパイク）検知</li>
+              <li><strong>国・デバイス別:</strong> ユーザーのアクセス地域や端末（モバイル / PC）</li>
+            </ul>
+          </div>
+          <div class="data-card">
+            <h4>分析情報（インサイト）と実績</h4>
+            <ul>
+              <li><strong>トレンドクエリグループ:</strong> トラフィックが伸びているテーマやジャンル</li>
+              <li><strong>アカウント発見経路:</strong> ユーザーがどのようにアカウントを見つけたか</li>
+              <li><strong>アチーブメント（マイルストーン）:</strong> 28日間の検索クリック新記録等の成果到達</li>
+            </ul>
+          </div>
+          <div class="data-card" style="background-color: #fff1f2; border-color: #fecdd3;">
+            <h4 style="color: #9f1239;">※計測対象外となるデータ（重要）</h4>
+            <ul style="color: #881337;">
+              <li style="::before { color: #9f1239; }">SNSアプリ内部での再生数・表示回数</li>
+              <li>SNSアプリ内での「いいね」「保存」「コメント」「シェア」数</li>
+              <li>SNSアプリ内でのフォロワー増減数やプロフィール閲覧数</li>
+              <li>※あくまで「Google検索エコシステムからの流入」専用の計測指標です</li>
+            </ul>
           </div>
         </div>
+
         <table class="data-table">
           <thead>
-            <tr><th>比較軸</th><th>Google検索（自社Webサイト）</th><th>プラットフォーム プロパティ（新機能）</th></tr>
+            <tr><th>比較項目</th><th>GSC プラットフォームプロパティ</th><th>各SNS内包アナリティクス</th></tr>
           </thead>
           <tbody>
-            <tr><th>トラフィック領域</th><td>Google検索結果 ➔ 自社Webサイト（Webドメイン）</td><td><strong>Google検索結果 ➔ 公式SNSコンテンツ（アカウント/動画）</strong></td></tr>
-            <tr><th>対象ユーザー層</th><td>Webで情報収集・比較検討を行う検索ユーザー</td><td><strong>検索からSNSコンテンツ（動画/画像）へ直接アクセスするユーザー</strong></td></tr>
-            <tr><th>取得データの強み</th><td>Webページ（記事/LP）の表示回数・クリック数・検索クエリ</td><td><strong>Google検索結果に露出したSNS投稿の検索パフォーマンス</strong></td></tr>
-            <tr><th>活用目的</th><td>自社WebサイトのSEO最適化・コンバージョン誘導</td><td><strong>Google検索からのSNSトラフィック集約・マルチプラットフォーム戦略</strong></td></tr>
+            <tr><th>データ領域</th><td>Google検索 / Discover ➔ SNSコンテンツ</td><td>SNSアプリ内のタイムライン / アプリ内検索</td></tr>
+            <tr><th>検索クエリ</th><td><strong>Google上で検索された正確なキーワードを取得</strong></td><td>アプリ内のトレンド等、限定的なデータのみ</td></tr>
+            <tr><th>ストック評価</th><td><strong>過去投稿が検索資産として継続流入しているか把握</strong></td><td>投稿直後のフロー型エンゲージメント中心</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
+    <!-- TAB 3: 導入実例・効果 -->
     <div id="tab3" class="tab-content">
       <div class="card">
-        <h2 class="card-title">Webサイト運用・マーケティングにおける3大利点</h2>
-        <div class="diagram-container">
-          <div class="diagram-title">データ活用循環フロー</div>
-          <div class="diagram-flow-grid">
-            <div class="diagram-node"><div class="node-title">① SNS検索データ</div><div class="node-desc">需要クエリを特定</div></div>
-            <div class="diagram-arrow">➔</div>
-            <div class="diagram-node accent-node"><div class="node-title">② Web(SEO)展開</div><div class="node-desc">記事・LP企画へ反映</div></div>
-            <div class="diagram-arrow">➔</div>
-            <div class="diagram-node"><div class="node-title">③ 資産最大化</div><div class="node-desc">投稿のリメイク判定</div></div>
+        <h2 class="card-title">実際に効果・成果を獲得した5つの実例ケーススタディ</h2>
+        <div class="case-list">
+          
+          <div class="case-item">
+            <div class="case-header">
+              <span class="case-title">1. マーケティング予算獲得とSNS運用ROIの定量証明</span>
+              <span class="case-tag">事業会社 / マーケティング部</span>
+            </div>
+            <div class="case-body">
+              従来、フォロワー数やいいね数など定性的になりがちだったInstagram運用に対し、プラットフォームプロパティを導入。Google検索から自社Instagramアカウントへ<strong>毎月数千件規模のオーガニッククリックが発生している事実</strong>を明確な数値として抽出。<br>
+              SNSがGoogle検索上の潜在顧客を捕獲する「獲得チャネル」であることを社内意思決定者に示し、<strong>SNS運用チームの増員および動画制作予算の獲得に成功</strong>しました。
+            </div>
+            <div class="case-metrics">
+              <span class="metric-badge">成果: SNS予算承認・体制拡大</span>
+              <span class="metric-badge">活用データ: パフォーマンスレポート（月間クリック数）</span>
+            </div>
           </div>
+
+          <div class="case-item">
+            <div class="case-header">
+              <span class="case-title">2. 検索需要に基づく「リバイバル動画」の特定とWeb予約率向上</span>
+              <span class="case-tag">医療法人 / クリニック</span>
+            </div>
+            <div class="case-body">
+              「ページ」および「クエリ」タブの分析により、過去にYouTubeへ投稿した「大腸カメラ事前準備（下剤の飲み方）」動画が、アプリ内再生数は落ち着いているものの<strong>Google検索からは長期間高いクリック数と上位表示を維持</strong>している事実を発見。<br>
+              切実な検索需要にマッチした資産動画であると特定し、該当動画をアカウントトップへ固定表示。さらに最新の注意事項を追記した補足版を展開したことで、<strong>検索経由からの新規Web予約率が大幅向上</strong>しました。
+            </div>
+            <div class="case-metrics">
+              <span class="metric-badge">成果: 新規Web予約獲得率の大幅UP</span>
+              <span class="metric-badge">活用データ: ページ別クリック数 & 検索クエリ</span>
+            </div>
+          </div>
+
+          <div class="case-item">
+            <div class="case-header">
+              <span class="case-title">3. ブランドSERP（検索結果画面）の複数面占有とプロフィールSEO</span>
+              <span class="case-tag">コスメ・美容ブランド</span>
+            </div>
+            <div class="case-body">
+              InstagramコンテンツがGoogle検索トップ10に入るケースのうち、58%が個別投稿ではなく「アカウントTOP（プロフィール）」であるデータに着目。自社Instagramアカウントが「韓国コスメ トレンド」等の一般キーワードで表示されていることを可視化。<br>
+              クエリデータに基づき、Instagramのプロフィール文（BIO）やアカウント名を検索キーワードに最適化（プロフィールSEO）。結果として<strong>Google検索1ページ目に公式サイトと公式Instagramが並列表示され、競合を排除した面占有を達成</strong>しました。
+            </div>
+            <div class="case-metrics">
+              <span class="metric-badge">成果: 検索1ページ目の面占有＆指名獲得</span>
+              <span class="metric-badge">活用データ: プロフィール流入クエリ分析</span>
+            </div>
+          </div>
+
+          <div class="case-item">
+            <div class="case-header">
+              <span class="case-title">4. SNS高評価クエリの「Webサイト側への逆輸入」によるSEO向上</span>
+              <span class="case-tag">オウンドメディア / 総合通販</span>
+            </div>
+            <div class="case-body">
+              自社TikTokプロパティを分析し、自社Webサイト側では未対策だったロングテールキーワードでショート動画が高インプレッションを獲得していることを特定。Googleが自社SNSに対して該当ジャンルの権威性を認めていると判断。<br>
+              その評価クエリをテーマにした<strong>新規Web記事コンテンツを自社サイト内に「逆輸入」して執筆</strong>。すでにGoogleから親和性が高いと認知されていたため、新設したWebページも即座に検索上位を獲得し、<strong>サイト全体のオーガニック流入数を底上げ</strong>しました。
+            </div>
+            <div class="case-metrics">
+              <span class="metric-badge">成果: 自社サイトSEOオーガニック流入底上げ</span>
+              <span class="metric-badge">活用データ: 評価クエリの交差分析</span>
+            </div>
+          </div>
+
+          <div class="case-item">
+            <div class="case-header">
+              <span class="case-title">5. 24時間フィルタによるトレンド急増検知と即時クロスポスト</span>
+              <span class="case-tag">情報系Webメディア</span>
+            </div>
+            <div class="case-body">
+              GSCの「24時間フィルタ」を用いて日次モニタリングを実施。YouTubeやXの投稿に対して、Google検索からのトラフィックが急増した瞬間をリアルタイム検知する運用を構築。<br>
+              スパイクを検知した際、<strong>即座にその検索キーワードを反映した投稿をInstagram ReelsやTikTokへ横展開（クロスポスト）</strong>。検索トレンドと完全に同期したマルチプラットフォーム展開により、爆発的な二次トラフィックを獲得しました。
+            </div>
+            <div class="case-metrics">
+              <span class="metric-badge">成果: スパイク波及による二次トラフィック拡大</span>
+              <span class="metric-badge">活用データ: 24時間リアルタイムフィルタ</span>
+            </div>
+          </div>
+
         </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: 運用上のメリット -->
+    <div id="tab4" class="tab-content">
+      <div class="card">
+        <h2 class="card-title">Webサイト運用・マーケティングにおける3大利点</h2>
         <div class="benefits-grid">
           <div class="benefit-item"><div class="benefit-number">01</div><h4>高ニーズ検索クエリの発見</h4><p>アプリ内分析では不可能な「ユーザーがGoogleで検索した具体的キーワード」を特定し、潜在的なお悩みや需要を可視化できます。</p></div>
           <div class="benefit-item"><div class="benefit-number">02</div><h4>Webコンテンツ（SEO）への転用</h4><p>SNS動画や投稿で検索トラフィックを獲得しているキーワードを、Webサイトの記事企画やLPの訴求文へ水平展開できます。</p></div>
@@ -321,23 +424,14 @@
       </div>
     </div>
 
-    <div id="tab4" class="tab-content">
+    <!-- TAB 5: 導入ステップ -->
+    <div id="tab5" class="tab-content">
       <div class="card">
         <h2 class="card-title">追加手順（システム開発不要・約3分で完了）</h2>
-        <div class="diagram-container">
-          <div class="diagram-title">設定フロー概要</div>
-          <div class="diagram-steps">
-            <div class="diagram-step-card"><div class="diagram-step-num">STEP 1</div><div class="diagram-step-label">プロパティ追加</div></div>
-            <div class="diagram-arrow">➔</div>
-            <div class="diagram-step-card"><div class="diagram-step-num">STEP 2</div><div class="diagram-step-label">SNSアカウント認証</div></div>
-            <div class="diagram-arrow">➔</div>
-            <div class="diagram-step-card"><div class="diagram-step-num">STEP 3</div><div class="diagram-step-label">データ計測開始</div></div>
-          </div>
-        </div>
         <div class="step-list">
           <div class="step-item"><span class="step-badge">STEP 1</span><div class="step-text"><h5>Search Consoleでプロパティ追加を選択</h5><p>Search Consoleのプロパティ選択プルダウンから「プロパティを追加」をクリックし、対象のプラットフォーム（YouTube / Instagram / X / TikTok）を選択します。</p></div></div>
           <div class="step-item"><span class="step-badge">STEP 2</span><div class="step-text"><h5>アカウント認証（OAuth）の実行</h5><p>各SNSの公式アカウントでログインし、Search Consoleからのアクセス連携を承認します（タグの追加やサーバー作業は不要です）。</p></div></div>
-          <div class="step-item"><span class="step-badge">STEP 3</span><div class="step-text"><h5>データの蓄積と定期モニタリング</h5><p>連携完了後からデータ収集が開始されます。「パフォーマンス」および「インサイト」レポートから検索クエリの推移を監視します。</p></div></div>
+          <div class="step-item"><span class="step-badge">STEP 3</span><div class="step-text"><h5>データの蓄積と定期モニタリング</h5><p>連携完了後からデータ収集が開始されます。「パフォーマンス」および「インサイト」レポートから検索クエリの推移を監視します（※連携前の過去データは取得できないため早期設定を推奨）。</p></div></div>
         </div>
       </div>
     </div>
