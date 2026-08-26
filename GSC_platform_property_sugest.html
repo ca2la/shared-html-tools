@@ -48,16 +48,40 @@
     const CACHE_KEY  = `cached_${currentFileName}`;
 
     async function bootstrap() {
+      // 通信タイムアウト（2秒）の設定
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+
       try {
-        const response = await fetch(`${REMOTE_URL}?t=${Date.now()}`, { cache: 'no-store' });
+        const response = await fetch(`${REMOTE_URL}?t=${Date.now()}`, {
+          cache: 'no-store',
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
         if (!response.ok) throw new Error('Fetch failed: ' + response.status);
         
         const latestHtml = await response.text();
-        localStorage.setItem(CACHE_KEY, latestHtml);
+        
+        // localStorageアクセスエラーの安全対策
+        try {
+          localStorage.setItem(CACHE_KEY, latestHtml);
+        } catch (e) {
+          console.warn('localStorage保存をスキップ:', e);
+        }
+
         renderApp(latestHtml, '● 最新版に同期完了');
       } catch (err) {
-        console.warn('最新版の取得をスキップ（オフラインまたは未設定）:', err);
-        const cachedHtml = localStorage.getItem(CACHE_KEY);
+        clearTimeout(timeoutId);
+        console.warn('最新版の取得をスキップ（ローカル内蔵版を表示します）:', err);
+        
+        let cachedHtml = null;
+        try {
+          cachedHtml = localStorage.getItem(CACHE_KEY);
+        } catch (e) {
+          console.warn('localStorage読み込みをスキップ:', e);
+        }
+
         if (cachedHtml) {
           renderApp(cachedHtml, '▲ キャッシュ版で動作中');
         } else {
@@ -71,14 +95,20 @@
       document.write(htmlContent);
       document.close();
 
-      window.addEventListener('DOMContentLoaded', () => {
-        const badge = document.createElement('div');
-        badge.style.cssText = 'position:fixed;bottom:10px;right:10px;font-size:10px;background:rgba(30,58,138,0.85);color:#fff;padding:3px 8px;border-radius:4px;z-index:9999;font-family:sans-serif;pointer-events:none;';
-        badge.textContent = syncStatusText;
+      const badge = document.createElement('div');
+      badge.style.cssText = 'position:fixed;bottom:10px;right:10px;font-size:10px;background:rgba(30,58,138,0.85);color:#fff;padding:3px 8px;border-radius:4px;z-index:9999;font-family:sans-serif;pointer-events:none;';
+      badge.textContent = syncStatusText;
+
+      if (document.body) {
         document.body.appendChild(badge);
-      });
+      } else {
+        window.addEventListener('DOMContentLoaded', () => {
+          document.body.appendChild(badge);
+        });
+      }
     }
 
+    // 起動
     bootstrap();
 
     // ==============================================================
@@ -157,7 +187,6 @@
     .data-table th { background-color: #f1f5f9; color: var(--text-main); font-weight: 600; }
     .data-table td { color: var(--text-sub); }
     
-    /* 取得データグリッド */
     .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
     @media (max-width: 640px) { .data-grid { grid-template-columns: 1fr; } }
     .data-card { border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px; background-color: #ffffff; }
@@ -166,7 +195,6 @@
     .data-card ul li { margin-bottom: 6px; padding-left: 12px; position: relative; }
     .data-card ul li::before { content: "✔"; position: absolute; left: 0; color: var(--accent); font-size: 10px; }
 
-    /* 実例カード */
     .case-list { display: flex; flex-direction: column; gap: 16px; }
     .case-item { border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px; background-color: #ffffff; }
     .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
@@ -306,7 +334,7 @@
           <div class="data-card" style="background-color: #fff1f2; border-color: #fecdd3;">
             <h4 style="color: #9f1239;">※計測対象外となるデータ（重要）</h4>
             <ul style="color: #881337;">
-              <li style="::before { color: #9f1239; }">SNSアプリ内部での再生数・表示回数</li>
+              <li>SNSアプリ内部での再生数・表示回数</li>
               <li>SNSアプリ内での「いいね」「保存」「コメント」「シェア」数</li>
               <li>SNSアプリ内でのフォロワー増減数やプロフィール閲覧数</li>
               <li>※あくまで「Google検索エコシステムからの流入」専用の計測指標です</li>
@@ -446,6 +474,9 @@
       document.getElementById(tabId).classList.add('active');
       event.currentTarget.classList.add('active');
     }
+  </script>
+</body>
+</html>`;
   </script>
 </body>
 </html>
