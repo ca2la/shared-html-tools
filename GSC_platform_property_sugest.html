@@ -5,10 +5,101 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Google Search Console プラットフォームプロパティ導入解説</title>
   <style>
-    /* --------------------------------------------------
-       CSS Reset & Variables
-       配色は白黒・グレーベース＋強調色1色（アクセント）に集約
-    -------------------------------------------------- */
+    /* ローディング画面用スタイル */
+    #sync-loader {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #f8f9fa;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      z-index: 99999;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      transition: opacity 0.2s ease;
+    }
+    .spinner {
+      border: 3px solid #e2e8f0;
+      border-top: 3px solid #1e3a8a;
+      border-radius: 50%;
+      width: 32px; height: 32px;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .sync-text { font-size: 13px; color: #4a5568; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <!-- 起動時の自動同期ローダー -->
+  <div id="sync-loader">
+    <div class="spinner"></div>
+    <div class="sync-text">最新バージョンを確認中...</div>
+  </div>
+
+  <script>
+    // ==============================================================
+    // 設定: ご自身のGitHubアカウント名とリポジトリ名
+    // ==============================================================
+    const GITHUB_USER = 'ca2la'; // ← ここを書き換えてください
+    const REPO_NAME   = 'shared-html-tools';
+    
+    // 自身のファイル名を自動判定 (GSC_platform_property_sugest.html)
+    const currentFileName = window.location.pathname.split('/').pop() || 'GSC_platform_property_sugest.html';
+    const REMOTE_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${REPO_NAME}/main/${currentFileName}`;
+    const CACHE_KEY  = `cached_${currentFileName}`;
+
+    async function bootstrap() {
+      try {
+        // キャッシュを防ぐタイムスタンプ付きでGitHubから最新版を取得
+        const response = await fetch(`${REMOTE_URL}?t=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error('Fetch failed: ' + response.status);
+        
+        const latestHtml = await response.text();
+        
+        // 取得した最新HTMLをローカルストレージに保存
+        localStorage.setItem(CACHE_KEY, latestHtml);
+
+        // 画面を最新のHTMLで丸ごと再描画
+        renderApp(latestHtml, '● 最新版に同期完了');
+      } catch (err) {
+        console.warn('最新版の取得をスキップ（オフラインまたは未設定）:', err);
+        
+        // キャッシュがあればキャッシュから描画、なければ内蔵のデフォルトHTMLを描画
+        const cachedHtml = localStorage.getItem(CACHE_KEY);
+        if (cachedHtml) {
+          renderApp(cachedHtml, '▲ キャッシュ版で動作中');
+        } else {
+          renderApp(DEFAULT_EMBEDDED_HTML, '● ローカル版で動作中');
+        }
+      }
+    }
+
+    function renderApp(htmlContent, syncStatusText) {
+      document.open();
+      document.write(htmlContent);
+      document.close();
+
+      // 右下に小さな同期ステータスバッジを表示
+      window.addEventListener('DOMContentLoaded', () => {
+        const badge = document.createElement('div');
+        badge.style.cssText = 'position:fixed;bottom:10px;right:10px;font-size:10px;background:rgba(30,58,138,0.85);color:#fff;padding:3px 8px;border-radius:4px;z-index:9999;font-family:sans-serif;pointer-events:none;';
+        badge.textContent = syncStatusText;
+        document.body.appendChild(badge);
+      });
+    }
+
+    // 起動
+    bootstrap();
+
+    // ==============================================================
+    // 初回・オフライン用の内蔵デフォルトHTMLデータ
+    // ==============================================================
+    const DEFAULT_EMBEDDED_HTML = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Search Console プラットフォームプロパティ導入解説</title>
+  <style>
     :root {
       --bg-color: #f8f9fa;
       --card-bg: #ffffff;
@@ -16,623 +107,100 @@
       --text-main: #1a202c;
       --text-sub: #4a5568;
       --text-muted: #718096;
-      --accent: #1e3a8a; /* 深みのある紺色（アクセント） */
+      --accent: #1e3a8a;
       --accent-light: #eff6ff;
       --radius: 8px;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      line-height: 1.6;
-      padding: 24px 16px;
-    }
-
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-    }
-
-    /* --------------------------------------------------
-       Header
-    -------------------------------------------------- */
-    header {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 24px 32px;
-      margin-bottom: 24px;
-    }
-
-    .badge {
-      display: inline-block;
-      background: var(--accent);
-      color: #ffffff;
-      font-size: 12px;
-      font-weight: bold;
-      padding: 4px 12px;
-      border-radius: 4px;
-      margin-bottom: 8px;
-      letter-spacing: 0.05em;
-    }
-
-    header h1 {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 8px;
-    }
-
-    header p {
-      color: var(--text-sub);
-      font-size: 14px;
-    }
-
-    /* --------------------------------------------------
-       Navigation Tabs
-    -------------------------------------------------- */
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      border-bottom: 2px solid var(--border-color);
-    }
-
-    .tab-btn {
-      background: none;
-      border: none;
-      padding: 12px 20px;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      position: relative;
-      bottom: -2px;
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s ease;
-    }
-
-    .tab-btn:hover {
-      color: var(--text-main);
-    }
-
-    .tab-btn.active {
-      color: var(--accent);
-      border-bottom: 2px solid var(--accent);
-    }
-
-    /* --------------------------------------------------
-       Tab Contents
-    -------------------------------------------------- */
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    /* Cards Layout */
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 24px;
-      margin-bottom: 20px;
-    }
-
-    .card-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .card-title::before {
-      content: "";
-      display: inline-block;
-      width: 4px;
-      height: 16px;
-      background-color: var(--accent);
-      border-radius: 2px;
-    }
-
-    /* --------------------------------------------------
-       図解用スタイル (Diagram Styles)
-    -------------------------------------------------- */
-    .diagram-container {
-      background-color: #f1f5f9;
-      border: 1px dashed #cbd5e1;
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-
-    .diagram-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-    }
-
-    /* タブ1: 構造比較ダイアグラム */
-    .diagram-compare-illust {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .illust-card {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .illust-card.active {
-      border-color: var(--accent);
-      background-color: var(--accent-light);
-    }
-
-    .illust-tag {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: #e2e8f0;
-      color: var(--text-sub);
-      margin-bottom: 12px;
-    }
-
-    .illust-tag.active {
-      background: var(--accent);
-      color: #ffffff;
-    }
-
-    /* Webサイト型：Google検索からSearch Consoleへの単一フローコンテナ */
-    .single-flow-container {
-      position: relative;
-      width: 100%;
-      max-width: 320px;
-      height: 180px;
-      margin-bottom: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .single-circle {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      background-color: rgba(226, 232, 240, 0.75);
-      border: 1px solid #cbd5e1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-main);
-      gap: 4px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-    }
-
-    .single-hub-badge {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      background: #ffffff;
-      border: 2px solid var(--accent);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    }
-
-    .single-hub-badge .hub-title {
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--accent);
-      white-space: nowrap;
-    }
-
-    .single-hub-badge .hub-sub {
-      font-size: 9px;
-      font-weight: 600;
-      color: var(--text-sub);
-      background: #f1f5f9;
-      padding: 1px 6px;
-      border-radius: 3px;
-      white-space: nowrap;
-    }
-
-    .flow-arrow-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 2px 0;
-    }
-
-    .flow-arrow-text {
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--text-sub);
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 2px 6px;
-      margin-bottom: 2px;
-      line-height: 1.2;
-    }
-
-    .flow-arrow-icon {
-      color: var(--accent);
-      font-size: 14px;
-      font-weight: bold;
-      line-height: 1;
-    }
-
-    /* ベン図用スタイル（Platform型用） */
-    .venn-container {
-      position: relative;
-      width: 100%;
-      max-width: 320px;
-      height: 180px;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .venn-circle {
-      position: absolute;
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      box-sizing: border-box;
-    }
-
-    .venn-left {
-      left: 15px;
-      background-color: rgba(219, 234, 254, 0.55);
-      border: 1px solid #93c5fd;
-    }
-
-    .venn-right {
-      right: 15px;
-      background-color: rgba(219, 234, 254, 0.55);
-      border: 1px solid #93c5fd;
-    }
-
-    .venn-label {
-      position: absolute;
-      top: 24px;
-      width: 100px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--accent);
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .venn-label-left {
-      left: 28px;
-    }
-
-    .venn-label-right {
-      right: 28px;
-    }
-
-    .venn-center-hub {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 3;
-      background: #ffffff;
-      border: 2px solid var(--accent);
-      border-radius: 8px;
-      padding: 6px 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      min-width: 110px;
-    }
-
-    .venn-center-hub .hub-title {
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--accent);
-      white-space: nowrap;
-    }
-
-    .venn-center-hub .hub-sub {
-      font-size: 9px;
-      font-weight: 600;
-      color: var(--text-sub);
-      background: #f1f5f9;
-      padding: 1px 6px;
-      border-radius: 3px;
-      white-space: nowrap;
-    }
-
-    .illust-desc {
-      font-size: 11px;
-      color: var(--text-sub);
-      line-height: 1.4;
-    }
-
-    /* タブ2 & 3: フロー・矢印 */
-    .diagram-flow-grid {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr auto 1fr;
-      align-items: center;
-      gap: 8px;
-      text-align: center;
-    }
-
-    .diagram-arrow {
-      color: var(--text-muted);
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .diagram-node {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 10px 8px;
-    }
-
-    .diagram-node.accent-node {
-      border-color: var(--accent);
-      background-color: var(--accent-light);
-    }
-
-    .diagram-node .node-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .diagram-node .node-desc {
-      font-size: 10px;
-      color: var(--text-sub);
-    }
-
-    /* タブ4: ステップ */
-    .diagram-steps {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr auto 1fr;
-      align-items: center;
-      gap: 8px;
-      text-align: center;
-    }
-
-    .diagram-step-card {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 10px;
-    }
-
-    .diagram-step-num {
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--accent);
-    }
-
-    .diagram-step-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    /* レスポンシブ調整 */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 24px 16px; }
+    .container { max-width: 960px; margin: 0 auto; }
+    header { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px 32px; margin-bottom: 24px; }
+    .badge { display: inline-block; background: var(--accent); color: #ffffff; font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 0.05em; }
+    header h1 { font-size: 24px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+    header p { color: var(--text-sub); font-size: 14px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid var(--border-color); }
+    .tab-btn { background: none; border: none; padding: 12px 20px; font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer; position: relative; bottom: -2px; border-bottom: 2px solid transparent; transition: all 0.2s ease; }
+    .tab-btn:hover { color: var(--text-main); }
+    .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+    .card-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .card-title::before { content: ""; display: inline-block; width: 4px; height: 16px; background-color: var(--accent); border-radius: 2px; }
+    .diagram-container { background-color: #f1f5f9; border: 1px dashed #cbd5e1; border-radius: var(--radius); padding: 16px; margin-bottom: 20px; }
+    .diagram-title { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 12px; text-transform: uppercase; }
+    .diagram-compare-illust { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .illust-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .illust-card.active { border-color: var(--accent); background-color: var(--accent-light); }
+    .illust-tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #e2e8f0; color: var(--text-sub); margin-bottom: 12px; }
+    .illust-tag.active { background: var(--accent); color: #ffffff; }
+    .single-flow-container { position: relative; width: 100%; max-width: 320px; height: 180px; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+    .single-circle { width: 110px; height: 110px; border-radius: 50%; background-color: rgba(226, 232, 240, 0.75); border: 1px solid #cbd5e1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--text-main); gap: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    .single-hub-badge { width: 110px; height: 110px; border-radius: 50%; background: #ffffff; border: 2px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    .single-hub-badge .hub-title { font-size: 10px; font-weight: 800; color: var(--accent); white-space: nowrap; }
+    .single-hub-badge .hub-sub { font-size: 9px; font-weight: 600; color: var(--text-sub); background: #f1f5f9; padding: 1px 6px; border-radius: 3px; white-space: nowrap; }
+    .flow-arrow-box { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 2px 0; }
+    .flow-arrow-text { font-size: 9px; font-weight: 700; color: var(--text-sub); background: #ffffff; border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; margin-bottom: 2px; line-height: 1.2; }
+    .flow-arrow-icon { color: var(--accent); font-size: 14px; font-weight: bold; line-height: 1; }
+    .venn-container { position: relative; width: 100%; max-width: 320px; height: 180px; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; }
+    .venn-circle { position: absolute; width: 140px; height: 140px; border-radius: 50%; box-sizing: border-box; }
+    .venn-left { left: 15px; background-color: rgba(219, 234, 254, 0.55); border: 1px solid #93c5fd; }
+    .venn-right { right: 15px; background-color: rgba(219, 234, 254, 0.55); border: 1px solid #93c5fd; }
+    .venn-label { position: absolute; top: 24px; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--accent); z-index: 1; pointer-events: none; }
+    .venn-label-left { left: 28px; }
+    .venn-label-right { right: 28px; }
+    .venn-center-hub { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3; background: #ffffff; border: 2px solid var(--accent); border-radius: 8px; padding: 6px 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 110px; }
+    .venn-center-hub .hub-title { font-size: 10px; font-weight: 800; color: var(--accent); white-space: nowrap; }
+    .venn-center-hub .hub-sub { font-size: 9px; font-weight: 600; color: var(--text-sub); background: #f1f5f9; padding: 1px 6px; border-radius: 3px; white-space: nowrap; }
+    .illust-desc { font-size: 11px; color: var(--text-sub); line-height: 1.4; }
+    .diagram-flow-grid { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 8px; text-align: center; }
+    .diagram-arrow { color: var(--text-muted); font-size: 14px; font-weight: bold; }
+    .diagram-node { background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 8px; }
+    .diagram-node.accent-node { border-color: var(--accent); background-color: var(--accent-light); }
+    .diagram-node .node-title { font-size: 11px; font-weight: 700; color: var(--text-main); }
+    .diagram-node .node-desc { font-size: 10px; color: var(--text-sub); }
+    .diagram-steps { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 8px; text-align: center; }
+    .diagram-step-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; }
+    .diagram-step-num { font-size: 10px; font-weight: 800; color: var(--accent); }
+    .diagram-step-label { font-size: 11px; font-weight: 700; color: var(--text-main); }
     @media (max-width: 640px) {
-      .diagram-compare-illust {
-        grid-template-columns: 1fr;
-      }
-      .diagram-flow-grid, .diagram-steps {
-        grid-template-columns: 1fr;
-        gap: 6px;
-      }
-      .diagram-arrow {
-        transform: rotate(90deg);
-        margin: 2px 0;
-      }
+      .diagram-compare-illust { grid-template-columns: 1fr; }
+      .diagram-flow-grid, .diagram-steps { grid-template-columns: 1fr; gap: 6px; }
+      .diagram-arrow { transform: rotate(90deg); margin: 2px 0; }
     }
-
-    /* Comparison Box (Tab 1) */
-    .comparison-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    @media (max-width: 640px) {
-      .comparison-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .box {
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 16px;
-      background-color: #ffffff;
-    }
-
-    .box.highlight {
-      background-color: var(--accent-light);
-      border-color: var(--accent);
-    }
-
-    .box h3 {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .box ul {
-      list-style: none;
-      font-size: 13px;
-      color: var(--text-sub);
-    }
-
-    .box ul li {
-      margin-bottom: 6px;
-      padding-left: 14px;
-      position: relative;
-    }
-
-    .box ul li::before {
-      content: "•";
-      position: absolute;
-      left: 0;
-      color: var(--text-muted);
-    }
-
-    /* Table (Tab 2) */
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      text-align: left;
-    }
-
-    .data-table th, .data-table td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .data-table th {
-      background-color: #f1f5f9;
-      color: var(--text-main);
-      font-weight: 600;
-    }
-
-    .data-table td {
-      color: var(--text-sub);
-    }
-
-    /* Benefits Grid (Tab 3) */
-    .benefits-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    @media (max-width: 768px) {
-      .benefits-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .benefit-item {
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 20px;
-    }
-
-    .benefit-number {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 4px;
-    }
-
-    .benefit-item h4 {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      color: var(--text-main);
-    }
-
-    .benefit-item p {
-      font-size: 13px;
-      color: var(--text-sub);
-    }
-
-    /* Timeline Steps (Tab 4) */
-    .step-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .step-item {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-      padding: 16px;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-    }
-
-    .step-badge {
-      background: var(--text-main);
-      color: #ffffff;
-      font-size: 12px;
-      font-weight: bold;
-      padding: 4px 8px;
-      border-radius: 4px;
-      white-space: nowrap;
-    }
-
-    .step-text h5 {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 4px;
-    }
-
-    .step-text p {
-      font-size: 13px;
-      color: var(--text-sub);
-    }
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 640px) { .comparison-grid { grid-template-columns: 1fr; } }
+    .box { border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px; background-color: #ffffff; }
+    .box.highlight { background-color: var(--accent-light); border-color: var(--accent); }
+    .box h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .box ul { list-style: none; font-size: 13px; color: var(--text-sub); }
+    .box ul li { margin-bottom: 6px; padding-left: 14px; position: relative; }
+    .box ul li::before { content: "•"; position: absolute; left: 0; color: var(--text-muted); }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+    .data-table th, .data-table td { padding: 12px 16px; border-bottom: 1px solid var(--border-color); }
+    .data-table th { background-color: #f1f5f9; color: var(--text-main); font-weight: 600; }
+    .data-table td { color: var(--text-sub); }
+    .benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 768px) { .benefits-grid { grid-template-columns: 1fr; } }
+    .benefit-item { border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px; }
+    .benefit-number { font-size: 20px; font-weight: 800; color: var(--accent); margin-bottom: 4px; }
+    .benefit-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--text-main); }
+    .benefit-item p { font-size: 13px; color: var(--text-sub); }
+    .step-list { display: flex; flex-direction: column; gap: 12px; }
+    .step-item { display: flex; gap: 16px; align-items: flex-start; padding: 16px; border: 1px solid var(--border-color); border-radius: var(--radius); }
+    .step-badge { background: var(--text-main); color: #ffffff; font-size: 12px; font-weight: bold; padding: 4px 8px; border-radius: 4px; white-space: nowrap; }
+    .step-text h5 { font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+    .step-text p { font-size: 13px; color: var(--text-sub); }
   </style>
 </head>
 <body>
-
   <div class="container">
-
-    <!-- Header -->
     <header>
       <span class="badge">Google Search Console 新機能</span>
       <h1>プラットフォーム プロパティ（Platform Properties）解説</h1>
       <p>公式SNSアカウント（YouTube, Instagram, X, TikTok）の「Google検索トラフィック」を可視化し、Web×SNS運用の最適化を促進</p>
     </header>
 
-    <!-- Tabs Navigation -->
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab(event, 'tab1')">概要と背景</button>
       <button class="tab-btn" onclick="switchTab(event, 'tab2')">データ比較</button>
@@ -640,70 +208,52 @@
       <button class="tab-btn" onclick="switchTab(event, 'tab4')">導入ステップ</button>
     </div>
 
-    <!-- Tab 1: 概要と背景 -->
     <div id="tab1" class="tab-content active">
       <div class="card">
         <h2 class="card-title">従来のプロパティと新機能の構造的違い</h2>
-
-        <!-- 図解：概要（データ構造イメージ） -->
         <div class="diagram-container">
           <div class="diagram-title">概念構造イメージ：データ集約モデル</div>
           <div class="diagram-compare-illust">
-            
-            <!-- 従来: WEBプロパティ -->
             <div class="illust-card">
               <span class="illust-tag">従来：Webサイト型</span>
-              
               <div class="single-flow-container">
                 <div class="single-circle">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                   <span>Google検索</span>
                 </div>
-
                 <div class="flow-arrow-box">
                   <span class="flow-arrow-text">Google検索からのトラフィックデータをSearch Consoleで集積</span>
                   <span class="flow-arrow-icon">↓</span>
                 </div>
-
                 <div class="single-hub-badge">
                   <span class="hub-title">Search Console</span>
                   <span class="hub-sub">Webデータ集約</span>
                 </div>
               </div>
-
               <p class="illust-desc">Google検索経由での自社Webサイトへの流入パフォーマンスデータを集約・分析</p>
             </div>
-
-            <!-- 新機能: プラットフォームプロパティ -->
             <div class="illust-card active">
               <span class="illust-tag active">新機能：Platform型</span>
-              
               <div class="venn-container">
                 <div class="venn-circle venn-left"></div>
                 <div class="venn-circle venn-right"></div>
-
                 <div class="venn-label venn-label-left">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
                   <span>公式SNS</span>
                 </div>
-
                 <div class="venn-label venn-label-right">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                   <span>Google / Discover</span>
                 </div>
-
                 <div class="venn-center-hub">
                   <span class="hub-title">Search Console</span>
                   <span class="hub-sub">SNS検索データ集約</span>
                 </div>
               </div>
-
               <p class="illust-desc">Google検索・Discover経由でのSNS投稿へのトラフィックデータを直接集約・可視化</p>
             </div>
-
           </div>
         </div>
-
         <div class="comparison-grid">
           <div class="box">
             <h3>従来の「ウェブサイト プロパティ」</h3>
@@ -723,181 +273,88 @@
       </div>
     </div>
 
-    <!-- Tab 2: データ比較 -->
     <div id="tab2" class="tab-content">
       <div class="card">
         <h2 class="card-title">可視化データの役割と計測範囲の違い</h2>
-
-        <!-- 図解：データ領域 -->
         <div class="diagram-container">
           <div class="diagram-title">計測領域のポジショニングマップ</div>
           <div class="diagram-flow-grid">
-            <div class="diagram-node">
-              <div class="node-title">SNSアプリ内</div>
-              <div class="node-desc">タイムライン / 検索</div>
-            </div>
+            <div class="diagram-node"><div class="node-title">SNSアプリ内</div><div class="node-desc">タイムライン / 検索</div></div>
             <div class="diagram-arrow">→</div>
-            <div class="diagram-node">
-              <div class="node-title">既存アナリティクス</div>
-              <div class="node-desc">エンゲージメント測定</div>
-            </div>
+            <div class="diagram-node"><div class="node-title">既存アナリティクス</div><div class="node-desc">エンゲージメント測定</div></div>
             <div class="diagram-arrow">vs</div>
-            <div class="diagram-node accent-node">
-              <div class="node-title">Google検索領域</div>
-              <div class="node-desc">検索クエリ / 潜在顧客</div>
-            </div>
+            <div class="diagram-node accent-node"><div class="node-title">Google検索領域</div><div class="node-desc">検索クエリ / 潜在顧客</div></div>
           </div>
         </div>
-
         <table class="data-table">
           <thead>
-            <tr>
-              <th>比較軸</th>
-              <th>Google検索（自社Webサイト）</th>
-              <th>プラットフォーム プロパティ（新機能）</th>
-            </tr>
+            <tr><th>比較軸</th><th>Google検索（自社Webサイト）</th><th>プラットフォーム プロパティ（新機能）</th></tr>
           </thead>
           <tbody>
-            <tr>
-              <th>トラフィック領域</th>
-              <td>Google検索結果 ➔ 自社Webサイト（Webドメイン）</td>
-              <td><strong>Google検索結果 ➔ 公式SNSコンテンツ（アカウント/動画）</strong></td>
-            </tr>
-            <tr>
-              <th>対象ユーザー層</th>
-              <td>Webで情報収集・比較検討を行う検索ユーザー</td>
-              <td><strong>検索からSNSコンテンツ（動画/画像）へ直接アクセスするユーザー</strong></td>
-            </tr>
-            <tr>
-              <th>取得データの強み</th>
-              <td>Webページ（記事/LP）の表示回数・クリック数・検索クエリ</td>
-              <td><strong>Google検索結果に露出したSNS投稿の検索パフォーマンス</strong></td>
-            </tr>
-            <tr>
-              <th>活用目的</th>
-              <td>自社WebサイトのSEO最適化・コンバージョン誘導</td>
-              <td><strong>Google検索からのSNSトラフィック集約・マルチプラットフォーム戦略</strong></td>
-            </tr>
+            <tr><th>トラフィック領域</th><td>Google検索結果 ➔ 自社Webサイト（Webドメイン）</td><td><strong>Google検索結果 ➔ 公式SNSコンテンツ（アカウント/動画）</strong></td></tr>
+            <tr><th>対象ユーザー層</th><td>Webで情報収集・比較検討を行う検索ユーザー</td><td><strong>検索からSNSコンテンツ（動画/画像）へ直接アクセスするユーザー</strong></td></tr>
+            <tr><th>取得データの強み</th><td>Webページ（記事/LP）の表示回数・クリック数・検索クエリ</td><td><strong>Google検索結果に露出したSNS投稿の検索パフォーマンス</strong></td></tr>
+            <tr><th>活用目的</th><td>自社WebサイトのSEO最適化・コンバージョン誘導</td><td><strong>Google検索からのSNSトラフィック集約・マルチプラットフォーム戦略</strong></td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- Tab 3: 運用上のメリット -->
     <div id="tab3" class="tab-content">
       <div class="card">
         <h2 class="card-title">Webサイト運用・マーケティングにおける3大利点</h2>
-
-        <!-- 図解：メリット活用フロー -->
         <div class="diagram-container">
           <div class="diagram-title">データ活用循環フロー</div>
           <div class="diagram-flow-grid">
-            <div class="diagram-node">
-              <div class="node-title">① SNS検索データ</div>
-              <div class="node-desc">需要クエリを特定</div>
-            </div>
+            <div class="diagram-node"><div class="node-title">① SNS検索データ</div><div class="node-desc">需要クエリを特定</div></div>
             <div class="diagram-arrow">➔</div>
-            <div class="diagram-node accent-node">
-              <div class="node-title">② Web(SEO)展開</div>
-              <div class="node-desc">記事・LP企画へ反映</div>
-            </div>
+            <div class="diagram-node accent-node"><div class="node-title">② Web(SEO)展開</div><div class="node-desc">記事・LP企画へ反映</div></div>
             <div class="diagram-arrow">➔</div>
-            <div class="diagram-node">
-              <div class="node-title">③ 資産最大化</div>
-              <div class="node-desc">投稿のリメイク判定</div>
-            </div>
+            <div class="diagram-node"><div class="node-title">③ 資産最大化</div><div class="node-desc">投稿のリメイク判定</div></div>
           </div>
         </div>
-
         <div class="benefits-grid">
-          <div class="benefit-item">
-            <div class="benefit-number">01</div>
-            <h4>高ニーズ検索クエリの発見</h4>
-            <p>アプリ内分析では不可能な「ユーザーがGoogleで検索した具体的キーワード」を特定し、潜在的なお悩みや需要を可視化できます。</p>
-          </div>
-          <div class="benefit-item">
-            <div class="benefit-number">02</div>
-            <h4>Webコンテンツ（SEO）への転用</h4>
-            <p>SNS動画や投稿で検索トラフィックを獲得しているキーワードを、Webサイトの記事企画やLPの訴求文へ水平展開できます。</p>
-          </div>
-          <div class="benefit-item">
-            <div class="benefit-number">03</div>
-            <h4>投稿資産のROI最大化</h4>
-            <p>「どのSNS・どの動画フォーマットが検索資産として残るか」を評価し、過去投稿のリメイクやマルチユースの優先度を判断できます。</p>
-          </div>
+          <div class="benefit-item"><div class="benefit-number">01</div><h4>高ニーズ検索クエリの発見</h4><p>アプリ内分析では不可能な「ユーザーがGoogleで検索した具体的キーワード」を特定し、潜在的なお悩みや需要を可視化できます。</p></div>
+          <div class="benefit-item"><div class="benefit-number">02</div><h4>Webコンテンツ（SEO）への転用</h4><p>SNS動画や投稿で検索トラフィックを獲得しているキーワードを、Webサイトの記事企画やLPの訴求文へ水平展開できます。</p></div>
+          <div class="benefit-item"><div class="benefit-number">03</div><h4>投稿資産のROI最大化</h4><p>「どのSNS・どの動画フォーマットが検索資産として残るか」を評価し、過去投稿のリメイクやマルチユースの優先度を判断できます。</p></div>
         </div>
       </div>
     </div>
 
-    <!-- Tab 4: 導入ステップ -->
     <div id="tab4" class="tab-content">
       <div class="card">
         <h2 class="card-title">追加手順（システム開発不要・約3分で完了）</h2>
-
-        <!-- 図解：ステップ -->
         <div class="diagram-container">
           <div class="diagram-title">設定フロー概要</div>
           <div class="diagram-steps">
-            <div class="diagram-step-card">
-              <div class="diagram-step-num">STEP 1</div>
-              <div class="diagram-step-label">プロパティ追加</div>
-            </div>
+            <div class="diagram-step-card"><div class="diagram-step-num">STEP 1</div><div class="diagram-step-label">プロパティ追加</div></div>
             <div class="diagram-arrow">➔</div>
-            <div class="diagram-step-card">
-              <div class="diagram-step-num">STEP 2</div>
-              <div class="diagram-step-label">SNSアカウント認証</div>
-            </div>
+            <div class="diagram-step-card"><div class="diagram-step-num">STEP 2</div><div class="diagram-step-label">SNSアカウント認証</div></div>
             <div class="diagram-arrow">➔</div>
-            <div class="diagram-step-card">
-              <div class="diagram-step-num">STEP 3</div>
-              <div class="diagram-step-label">データ計測開始</div>
-            </div>
+            <div class="diagram-step-card"><div class="diagram-step-num">STEP 3</div><div class="diagram-step-label">データ計測開始</div></div>
           </div>
         </div>
-
         <div class="step-list">
-          <div class="step-item">
-            <span class="step-badge">STEP 1</span>
-            <div class="step-text">
-              <h5>Search Consoleでプロパティ追加を選択</h5>
-              <p>Search Consoleのプロパティ選択プルダウンから「プロパティを追加」をクリックし、対象のプラットフォーム（YouTube / Instagram / X / TikTok）を選択します。</p>
-            </div>
-          </div>
-          <div class="step-item">
-            <span class="step-badge">STEP 2</span>
-            <div class="step-text">
-              <h5>アカウント認証（OAuth）の実行</h5>
-              <p>各SNSの公式アカウントでログインし、Search Consoleからのアクセス連携を承認します（タグの追加やサーバー作業は不要です）。</p>
-            </div>
-          </div>
-          <div class="step-item">
-            <span class="step-badge">STEP 3</span>
-            <div class="step-text">
-              <h5>データの蓄積と定期モニタリング</h5>
-              <p>連携完了後からデータ収集が開始されます。「パフォーマンス」および「インサイト」レポートから検索クエリの推移を監視します。</p>
-            </div>
-          </div>
+          <div class="step-item"><span class="step-badge">STEP 1</span><div class="step-text"><h5>Search Consoleでプロパティ追加を選択</h5><p>Search Consoleのプロパティ選択プルダウンから「プロパティを追加」をクリックし、対象のプラットフォーム（YouTube / Instagram / X / TikTok）を選択します。</p></div></div>
+          <div class="step-item"><span class="step-badge">STEP 2</span><div class="step-text"><h5>アカウント認証（OAuth）の実行</h5><p>各SNSの公式アカウントでログインし、Search Consoleからのアクセス連携を承認します（タグの追加やサーバー作業は不要です）。</p></div></div>
+          <div class="step-item"><span class="step-badge">STEP 3</span><div class="step-text"><h5>データの蓄積と定期モニタリング</h5><p>連携完了後からデータ収集が開始されます。「パフォーマンス」および「インサイト」レポートから検索クエリの推移を監視します。</p></div></div>
         </div>
       </div>
     </div>
-
   </div>
 
-  <!-- JavaScript for Interactive Tabs -->
   <script>
     function switchTab(event, tabId) {
-      // 全てのタブコンテンツを非表示
       const contents = document.querySelectorAll('.tab-content');
       contents.forEach(content => content.classList.remove('active'));
-
-      // 全てのタブボタンのアクティブ状態を解除
       const buttons = document.querySelectorAll('.tab-btn');
       buttons.forEach(button => button.classList.remove('active'));
-
-      // 選択されたタブとボタンをアクティブ化
       document.getElementById(tabId).classList.add('active');
       event.currentTarget.classList.add('active');
     }
+  </script>
+</body>
+</html>`;
   </script>
 </body>
 </html>
