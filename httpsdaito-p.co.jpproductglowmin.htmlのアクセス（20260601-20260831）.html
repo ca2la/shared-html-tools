@@ -15,6 +15,7 @@
       --text: #1e293b;
       --text-muted: #64748b;
       --border: #e2e8f0;
+      --accent: #f59e0b;
     }
     * {
       box-sizing: border-box;
@@ -140,6 +141,33 @@
       background-color: #f1f5f9;
       color: #64748b;
     }
+    .analysis-list {
+      display: grid;
+      gap: 16px;
+    }
+    .analysis-item {
+      background: #f8fafc;
+      border-left: 4px solid var(--primary-light);
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+    }
+    .analysis-item-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .analysis-item-content {
+      font-size: 0.9rem;
+      color: #334155;
+      line-height: 1.65;
+    }
+    .analysis-item-content strong {
+      color: #0f172a;
+    }
   </style>
 </head>
 <body>
@@ -261,6 +289,46 @@
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- 乖離の要因分析カード -->
+    <div class="card">
+      <div class="card-title">GA4（18,922回）とサーチコンソール（153回）の数値乖離の理由</div>
+      <div class="analysis-list">
+        <div class="analysis-item">
+          <div class="analysis-item-title">1. 「表示回数」という言葉が指す意味の違い（画面が出た回数 vs ページが見られた回数）</div>
+          <div class="analysis-item-content">
+            <strong>サーチコンソール（153回）:</strong> ユーザーがGoogleで検索したとき、検索結果一覧の中にサイトのURLが表示された回数です（来訪前の露出数）。<br>
+            <strong>GA4（18,922回）:</strong> 実際にサイトへ訪れた人が、ブラウザ上でページを閲覧・再読み込みした回数（ページビュー数）です（来訪後の閲覧数）。
+          </div>
+        </div>
+
+        <div class="analysis-item">
+          <div class="analysis-item-title">2. 集計対象のアドレス設定の違い（「www.あり」と「www.なし」のズレ）</div>
+          <div class="analysis-item-content">
+            実際のサイトは「<strong>https://www.daito-p.co.jp</strong>（wwwあり）」を正式アドレスとして運用しており、GA4もこちらを計測しています。一方、確認していたサーチコンソールは「<strong>https://daito-p.co.jp</strong>（wwwなし）」で登録されていたため、正式アドレスから外れたごくわずかな端数（153回・5クリック）しか拾えていませんでした。
+          </div>
+        </div>
+
+        <div class="analysis-item">
+          <div class="analysis-item-title">3. Google検索以外からのアクセスが含まれている</div>
+          <div class="analysis-item-content">
+            サーチコンソールは「Googleの自然検索」しか計測できません。GA4で記録されている約6,100セッションのうち、<strong>約35%（約2,100回）はYahoo! 検索（926回）、直接アクセス・お気に入り（443回）、Bing検索（364回）、他サイトからのリンク</strong>など、Google検索以外からの来訪です。
+          </div>
+        </div>
+
+        <div class="analysis-item">
+          <div class="analysis-item-title">4. Google検索での表示が別ページに奪われ、本来見せたいページに人が集まっていない</div>
+          <div class="analysis-item-content">
+            <strong>何が起きているか:</strong><br>
+            本来ユーザーを呼び込みたい製品ページではなく、「ブランドサイト」や「取扱施設一覧」といった別の関連ページばかりがGoogle検索結果に優先して表示されています。（検索結果に表示された回数：取扱施設一覧 15,550回 ／ ブランドサイト 5,147回）<br><br>
+            <strong>原因:</strong><br>
+            似た内容のページが複数ある場合、検索エンジンに「このページを代表として検索結果に出してください」と伝える設定（URLの正規化）が必要です。現在その案内がWebサイト内に書かれていないため、Google側がどのページを優先すべきか迷い、評価やアクセスが分散してしまっています。<br><br>
+            <strong>今後の対策:</strong><br>
+            「優先して検索結果に出したい本命ページはここである」という指示タグをページ内に追加し、検索エンジンの評価を1つに集約させます。
+          </div>
+        </div>
       </div>
     </div>
   </div>
