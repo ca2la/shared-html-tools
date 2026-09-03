@@ -297,7 +297,7 @@
       <div class="card-title">GA4とサーチコンソールの数値乖離の理由</div>
       <div class="analysis-list">
         <div class="analysis-item">
-          <div class="analysis-item-title">1. 「表示回数」という言葉が指す意味の違い（画面が出た回数 vs ページが見られた回数）</div>
+          <div class="analysis-item-title">1. 「表示回数」の意味の違い（画面が出た回数 vs ページが見られた回数）</div>
           <div class="analysis-item-content">
             <strong>サーチコンソール:</strong> ユーザーがGoogleで検索した際、検索結果一覧の中にサイトのURLが表示された回数です（来訪前の露出数）。<br>
             <strong>GA4:</strong> 実際にサイトへ訪れた人が、ブラウザ上でページを閲覧・再読み込みした回数（ページビュー数）です（来訪後の閲覧数）。
@@ -307,26 +307,23 @@
         <div class="analysis-item">
           <div class="analysis-item-title">2. 集計対象のアドレス設定の違い（「www.あり」と「www.なし」のズレ）</div>
           <div class="analysis-item-content">
-            実際のWebサイトは「<strong>https://www.daito-p.co.jp</strong>（wwwあり）」を正式アドレスとして運用しており、GA4もこちらを計測しています。一方、確認していたサーチコンソールは「<strong>https://daito-p.co.jp</strong>（wwwなし）」で登録されていたため、正式アドレスから外れたごくわずかなアクセスのみが記録されていました。
+            実際のWebサイトは「<strong>https://www.daito-p.co.jp</strong>（wwwあり）」を正式アドレスとして運用しており、GA4もこちらを計測しています。一方、確認していたサーチコンソールは「<strong>https://daito-p.co.jp</strong>（wwwなし）」で登録されていたため、正式アドレスから外れたアクセスのみが記録されています。
           </div>
         </div>
 
         <div class="analysis-item">
           <div class="analysis-item-title">3. Google検索以外からのアクセスが含まれている</div>
           <div class="analysis-item-content">
-            サーチコンソールは「Googleの自然検索」のみを記録します。一方、GA4には<strong>Yahoo! 検索、直接アクセス（お気に入り・履歴など）、Bing検索、外部サイトのリンク</strong>など、Google以外のあらゆる経路からの来訪が含まれて集計されています。
+            サーチコンソールは「Googleの自然検索」のみを記録します。一方、GA4には<strong>Google以外の検索エンジン、直接アクセス（お気に入り・履歴など）、外部サイトのリンク</strong>などが含まれて集計されています。
           </div>
         </div>
 
         <div class="analysis-item">
-          <div class="analysis-item-title">4. Google検索での表示が別ページに奪われ、本来見せたいページに人が集まっていない</div>
+          <div class="analysis-item-title">4. 本来見せたいページ以外がGoogle検索で表示されている</div>
           <div class="analysis-item-content">
-            <strong>何が起きているか:</strong><br>
-            本来ユーザーを呼び込みたい製品ページではなく、「ブランドサイト」や「取扱施設一覧」といった別の関連ページばかりがGoogle検索結果に優先して表示されています。<br><br>
+            「ブランドサイト」や「取扱施設一覧」などの別の関連ページばかりがGoogle検索結果に優先して表示されています。<br><br>
             <strong>原因:</strong><br>
-            似た内容のページが複数ある場合、検索エンジンに「このページを代表として検索結果に出してください」と伝える設定（URLの正規化）が必要です。現在その案内がWebサイト内に書かれていないため、Google側がどのページを優先すべきか迷い、評価やアクセスが分散してしまっています。<br><br>
-            <strong>今後の対策:</strong><br>
-            「優先して検索結果に出したい本命ページはここである」という指示タグをページ内に追加し、検索エンジンの評価を1つに集約させます。
+            似た内容のページが複数ある場合、リダイレクト設定が必要です。現在そのその設定が実行されていないため、Google側がどのページを優先すべきか迷い、評価やアクセスが分散しています。<br><br>
           </div>
         </div>
       </div>
