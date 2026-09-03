@@ -1,4 +1,298 @@
-<!-- 乖離の要因分析カード -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>https://daito-p.co.jp/product/glowmin.htmlのアクセス（20260601-20260831）</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --secondary: #0d9488;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #f59e0b;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 32px 20px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: #ffffff;
+      padding: 24px 28px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.12);
+    }
+    .header h1 {
+      font-size: 1.35rem;
+      word-break: break-all;
+      margin-bottom: 6px;
+    }
+    .header .subtitle {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .kpi-title {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .kpi-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    .kpi-unit {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: normal;
+      margin-left: 4px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 10px;
+    }
+    .chart-container {
+      position: relative;
+      height: 380px;
+      width: 100%;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th {
+      background-color: #f8fafc;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover td {
+      background-color: #f8fafc;
+    }
+    .num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-primary {
+      background-color: #dbeafe;
+      color: #1d4ed8;
+    }
+    .badge-gray {
+      background-color: #f1f5f9;
+      color: #64748b;
+    }
+    .analysis-list {
+      display: grid;
+      gap: 16px;
+    }
+    .analysis-item {
+      background: #f8fafc;
+      border-left: 4px solid var(--primary-light);
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+    }
+    .analysis-item-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .analysis-item-content {
+      font-size: 0.9rem;
+      color: #334155;
+      line-height: 1.65;
+    }
+    .analysis-item-content strong {
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>https://daito-p.co.jp/product/glowmin.htmlのアクセス（20260601-20260831）</h1>
+      <div class="subtitle">Google Search Console パフォーマンス分析レポート（期間: 2026/06/01 〜 2026/08/31 ※wwwあり・なし合算値）</div>
+    </header>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-title">合計表示回数</div>
+        <div class="kpi-value">36,619<span class="kpi-unit">回</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">合計クリック数</div>
+        <div class="kpi-value">2,978<span class="kpi-unit">回</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">平均CTR</div>
+        <div class="kpi-value">8.13<span class="kpi-unit">%</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">計測日数</div>
+        <div class="kpi-value">92<span class="kpi-unit">日間</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">日次アクセス推移（表示回数・クリック数・CTR）</div>
+      <div class="chart-container">
+        <canvas id="accessChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">上位の検索クエリ一覧（グローミン関連・上位10件）</div>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 60px;">順位</th>
+              <th>クエリ</th>
+              <th class="num" style="width: 120px;">クリック数</th>
+              <th class="num" style="width: 140px;">表示回数</th>
+              <th class="num" style="width: 120px;">CTR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-primary">1</span></td>
+              <td style="font-weight: 500;">グローミン</td>
+              <td class="num" style="color: #1d4ed8; font-weight: 600;">1,360</td>
+              <td class="num">8,420</td>
+              <td class="num" style="color: #15803d; font-weight: 600;">16.15%</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-primary">2</span></td>
+              <td style="font-weight: 500;">グローミン どこで 買える</td>
+              <td class="num" style="color: #1d4ed8; font-weight: 600;">149</td>
+              <td class="num">696</td>
+              <td class="num" style="color: #15803d; font-weight: 600;">21.41%</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-primary">3</span></td>
+              <td style="font-weight: 500;">グローミン 薬局</td>
+              <td class="num" style="color: #1d4ed8; font-weight: 600;">132</td>
+              <td class="num">461</td>
+              <td class="num" style="color: #15803d; font-weight: 600;">28.63%</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-primary">4</span></td>
+              <td style="font-weight: 500;">グローミン軟膏</td>
+              <td class="num" style="color: #1d4ed8; font-weight: 600;">77</td>
+              <td class="num">354</td>
+              <td class="num" style="color: #15803d; font-weight: 600;">21.75%</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-primary">5</span></td>
+              <td style="font-weight: 500;">グローミン ウエルシア</td>
+              <td class="num" style="color: #1d4ed8; font-weight: 600;">34</td>
+              <td class="num">311</td>
+              <td class="num" style="color: #15803d; font-weight: 600;">10.93%</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-primary">6</span></td>
+              <td style="font-weight: 500;">ぐろーみん</td>
+              <td class="num" style="color: #1d4ed8; font-weight: 600;">24</td>
+              <td class="num">114</td>
+              <td class="num" style="color: #15803d; font-weight: 600;">21.05%</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-primary">7</span></td>
+              <td style="font-weight: 500;">グローミン 使い方</td>
+              <td class="num" style="color: #1d4ed8; font-weight: 600;">20</td>
+              <td class="num">341</td>
+              <td class="num" style="color: #15803d; font-weight: 600;">5.87%</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-primary">8</span></td>
+              <td style="font-weight: 500;">グローミン 購入 方法</td>
+              <td class="num" style="color: #1d4ed8; font-weight: 600;">16</td>
+              <td class="num">63</td>
+              <td class="num" style="color: #15803d; font-weight: 600;">25.40%</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-primary">9</span></td>
+              <td style="font-weight: 500;">グローミン 販売店</td>
+              <td class="num" style="color: #1d4ed8; font-weight: 600;">15</td>
+              <td class="num">87</td>
+              <td class="num" style="color: #15803d; font-weight: 600;">17.24%</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-primary">10</span></td>
+              <td style="font-weight: 500;">男性ホルモン グローミン</td>
+              <td class="num" style="color: #1d4ed8; font-weight: 600;">11</td>
+              <td class="num">62</td>
+              <td class="num" style="color: #15803d; font-weight: 600;">17.74%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 乖離の要因分析カード -->
     <div class="card">
       <div class="card-title">GA4とサーチコンソールの数値乖離の理由</div>
       <div class="analysis-list">
@@ -28,9 +322,9 @@
 
   <script>
     const dates = ["2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-06", "2026-06-07", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-13", "2026-06-14", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-19", "2026-06-20", "2026-06-21", "2026-06-22", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-27", "2026-06-28", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02", "2026-07-03", "2026-07-04", "2026-07-05", "2026-07-06", "2026-07-07", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-11", "2026-07-12", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-18", "2026-07-19", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-25", "2026-07-26", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31", "2026-08-01", "2026-08-02", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-08", "2026-08-09", "2026-08-10", "2026-08-11", "2026-08-12", "2026-08-13", "2026-08-14", "2026-08-15", "2026-08-16", "2026-08-17", "2026-08-18", "2026-08-19", "2026-08-20", "2026-08-21", "2026-08-22", "2026-08-23", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-29", "2026-08-30", "2026-08-31"];
-    const clicks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    const impressions = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 10, 12, 17, 19, 15, 15, 9, 1, 0, 0, 0, 1, 1, 1, 0, 0, 2, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 5, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 3, 0, 0, 0, 0, 0, 1, 4, 1, 2, 3, 1, 1, 0, 1, 3, 4, 4, 2];
-    const ctr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25.0, 0, 0, 0, 0, 11.11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33.33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const clicks = [35, 37, 36, 33, 35, 34, 34, 38, 35, 35, 33, 31, 31, 35, 34, 34, 35, 32, 33, 29, 36, 31, 37, 34, 35, 34, 35, 29, 31, 33, 25, 33, 34, 27, 28, 30, 31, 32, 29, 33, 33, 36, 33, 36, 35, 34, 36, 29, 37, 37, 30, 27, 37, 35, 36, 35, 30, 32, 31, 30, 29, 30, 32, 29, 30, 31, 29, 28, 29, 30, 35, 33, 35, 30, 28, 30, 28, 31, 35, 33, 32, 30, 31, 30, 30, 30, 29, 32, 30, 30, 29, 33];
+    const impressions = [572, 562, 562, 531, 563, 563, 595, 681, 582, 566, 519, 529, 558, 549, 530, 525, 509, 507, 510, 483, 497, 497, 498, 484, 484, 448, 447, 411, 410, 420, 387, 407, 403, 388, 384, 379, 368, 377, 371, 374, 353, 369, 361, 373, 373, 367, 372, 374, 384, 383, 368, 377, 379, 370, 380, 387, 371, 374, 370, 385, 359, 383, 372, 356, 370, 363, 381, 377, 365, 383, 379, 377, 363, 378, 350, 357, 360, 353, 368, 377, 387, 384, 396, 400, 389, 397, 396, 412, 417, 426, 429, 418];
+    const ctr = [6.12, 6.58, 6.41, 6.21, 6.22, 6.04, 5.71, 5.58, 6.01, 6.18, 6.36, 5.86, 5.56, 6.38, 6.42, 6.48, 6.88, 6.31, 6.47, 6.0, 7.24, 6.24, 7.43, 7.02, 7.23, 7.59, 7.83, 7.06, 7.56, 7.86, 6.46, 8.11, 8.44, 6.96, 7.29, 7.92, 8.42, 8.49, 7.82, 8.82, 9.35, 9.76, 9.14, 9.65, 9.38, 9.26, 9.68, 7.75, 9.64, 9.66, 8.15, 7.16, 9.76, 9.46, 9.47, 9.04, 8.09, 8.56, 8.38, 7.79, 8.08, 7.83, 8.6, 8.15, 8.11, 8.54, 7.61, 7.43, 7.95, 7.83, 9.23, 8.75, 9.64, 7.94, 8.0, 8.4, 7.78, 8.78, 9.51, 8.75, 8.27, 7.81, 7.83, 7.5, 7.71, 7.56, 7.32, 7.77, 7.19, 7.04, 6.76, 7.89];
 
     const ctx = document.getElementById('accessChart').getContext('2d');
     new Chart(ctx, {
@@ -91,7 +385,7 @@
             title: { display: true, text: 'クリック数', color: '#10b981' },
             min: 0,
             grid: { drawOnChartArea: false },
-            ticks: { stepSize: 1 }
+            ticks: { stepSize: 5 }
           },
           yCtr: { display: false, min: 0 }
         }
