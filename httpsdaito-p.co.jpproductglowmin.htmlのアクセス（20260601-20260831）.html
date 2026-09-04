@@ -558,19 +558,19 @@
       }
     });
 
-    // 2. 検索流入ハブ比較チャート
+    // 2. 検索流入ハブ比較チャート（X軸をパス表記に設定）
     const ctxHub = document.getElementById('hubChart').getContext('2d');
     new Chart(ctxHub, {
       type: 'bar',
       data: {
         labels: [
-          '製品詳細(直接着地)',
-          '朝立ちコラム(/npt)',
-          '旧製品頁(/gm)',
-          '取扱店案内(/gm_store)',
-          'トップページ(/)',
-          '成分解説(/testosterone)',
-          'ブランドサイト'
+          '/product/glowmin.html',
+          '/npt.htm',
+          '/gm.htm',
+          '/gm/gm_store.htm',
+          '/',
+          '/reference/testosterone.htm',
+          '/brand/glowmin/'
         ],
         datasets: [
           {
@@ -603,6 +603,13 @@
           }
         },
         scales: {
+          x: {
+            ticks: {
+              autoSkip: false,
+              maxRotation: 45,
+              minRotation: 20
+            }
+          },
           y: {
             beginAtZero: true,
             title: { display: true, text: 'Google検索クリック数（回）' }
