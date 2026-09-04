@@ -297,23 +297,17 @@
       <div class="card-title">GA4とサーチコンソールの数値乖離の理由</div>
       <div class="analysis-list">
         <div class="analysis-item">
-          <div class="analysis-item-title">① GSC登録プロパティの合算による解決</div>
+          <div class="analysis-item-title">① 到達前の参照元（流入経路）の違いと別検索エンジンの存在</div>
           <div class="analysis-item-content">
-            当初確認していたGSCは「wwwなし」プロパティであったため、正規化から外れたわずかなアクセスしか記録されていませんでした。正規アドレスである「wwwあり」プロパティを合算したことで、検索経由のクリック実績は本来の約3,000回へと修正され、GA4の検索ユーザー実数（約3,500人）と整合しました。
+            Search Consoleは「Googleの自然検索」のみを記録しますが、GA4の全アクセスにはGoogle以外の多様な流入経路が含まれています。<br>
+            実際には、<strong>Yahoo! 検索やBing検索といったGoogle以外の検索エンジンからの流入が全体の約21%</strong>を占め、さらに<strong>直接アクセス（ブックマーク・履歴等）や外部医療機関サイト等からの流入が約13%</strong>存在します。これらの到達前メディアのボリュームを切り分けることで、Google検索数とサイト全体アクセス数との乖離が説明できます。
           </div>
         </div>
 
         <div class="analysis-item">
-          <div class="analysis-item-title">② Google検索以外の多様な流入チャネル</div>
+          <div class="analysis-item-title">② サイト内回遊および閲覧再開に伴うセッション・PVの増加</div>
           <div class="analysis-item-content">
-            GSCは「Googleの自然検索」のみを計測します。一方、GA4の全アクセスにはYahoo! 検索、直接アクセス（ブックマーク・履歴・URL直打ち）、Bing検索、外部医療機関やポータルサイトのリンク経由など、Google検索以外のあらゆる流入が含まれているため、サイト全体の数値が大きく上回ります。
-          </div>
-        </div>
-
-        <div class="analysis-item">
-          <div class="analysis-item-title">③ 閲覧再開に伴うセッション分割と計測定義の差</div>
-          <div class="analysis-item-content">
-            Google検索からページを開いた後、30分以上放置して離席し、同一タブで閲覧やスクロールを再開した場合、GA4ではセッションタイムアウトにより「新規セッション」として追加計上されます。1回の検索クリックから複数セッションが発生することや、Googleアプリ等からの流入判定が加わることで、クリック数よりもセッション数が多くカウントされます。
+            検索から本ページへ直接着地したアクセスだけでなく、関連コラム記事など「サイト内の前のページ」を経由して閲覧された回数や、ページ内リンクを回遊して再度読み込まれた回数が加わるため、全体の表示回数（PV）が大きく膨らみます。また、同一タブで30分以上放置した後に閲覧を再開した場合、GA4では新規セッションとして追加計上されることも、検索クリック実数よりセッション数が多くなる要因です。
           </div>
         </div>
       </div>
