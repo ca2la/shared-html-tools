@@ -16,6 +16,7 @@
       --text-muted: #64748b;
       --border: #e2e8f0;
       --accent: #f59e0b;
+      --success: #10b981;
     }
     * {
       box-sizing: border-box;
@@ -71,6 +72,7 @@
     .kpi-value {
       font-size: 1.8rem;
       font-weight: 700;
+      color: var(--text);
     }
     .kpi-unit {
       font-size: 0.95rem;
@@ -92,10 +94,13 @@
       margin-bottom: 16px;
       border-bottom: 2px solid #f1f5f9;
       padding-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .chart-container {
       position: relative;
-      height: 380px;
+      height: 360px;
       width: 100%;
     }
     table {
@@ -132,6 +137,7 @@
       border-radius: 9999px;
       font-size: 0.75rem;
       font-weight: 600;
+      white-space: nowrap;
     }
     .badge-primary {
       background-color: #dbeafe;
@@ -141,6 +147,50 @@
       background-color: #f1f5f9;
       color: #64748b;
     }
+    .badge-blue { background-color: #dbeafe; color: #1d4ed8; }
+    .badge-teal { background-color: #ccfbf1; color: #0f766e; }
+    .badge-orange { background-color: #ffedd5; color: #c2410c; }
+    
+    .route-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .route-box {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      background: #fafafa;
+    }
+    .route-box h4 {
+      font-size: 0.95rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .route-box p {
+      font-size: 0.88rem;
+      color: #334155;
+      line-height: 1.6;
+    }
+    .tag-list {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.78rem;
+      color: #475569;
+    }
+
     .analysis-list {
       display: grid;
       gap: 16px;
@@ -196,6 +246,7 @@
       </div>
     </div>
 
+    <!-- 日次推移チャート -->
     <div class="card">
       <div class="card-title">日次アクセス推移（表示回数・クリック数・CTR）</div>
       <div class="chart-container">
@@ -203,6 +254,7 @@
       </div>
     </div>
 
+    <!-- 上位検索クエリ -->
     <div class="card">
       <div class="card-title">上位の検索クエリ一覧（グローミン関連・上位10件）</div>
       <div style="overflow-x: auto;">
@@ -292,6 +344,125 @@
       </div>
     </div>
 
+    <!-- 検索着地からグローミン詳細へ繋がるサイト内遷移・主要ハブ分析 -->
+    <div class="card">
+      <div class="card-title">検索着地からグローミン詳細へ繋がる主要ハブの比較</div>
+      <div class="chart-container">
+        <canvas id="hubChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">検索流入ハブ一覧（本ページへの遷移ポテンシャル上位ページ）</div>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>分類</th>
+              <th>着地ページURL</th>
+              <th class="num">検索クリック数</th>
+              <th class="num">検索表示回数</th>
+              <th class="num">CTR</th>
+              <th>主な検索クエリ・役割</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background-color: #eff6ff;">
+              <td><span class="badge badge-blue">直接着地（本命）</span></td>
+              <td style="font-weight: 600;">/product/glowmin.html</td>
+              <td class="num" style="color: #1d4ed8; font-weight: 700;">2,973</td>
+              <td class="num">36,466</td>
+              <td class="num">8.15%</td>
+              <td>「グローミン」「グローミン 薬局」等、指名購入クエリ</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-teal">コラム（潜在層）</span></td>
+              <td style="font-weight: 500;">/npt.htm</td>
+              <td class="num" style="font-weight: 600;">4,282</td>
+              <td class="num">280,652</td>
+              <td class="num">1.53%</td>
+              <td>「あさだち」「朝立ち 理由」等の巨大PVコラム。解決策導線</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-orange">旧製品情報</span></td>
+              <td style="font-weight: 500;">/gm.htm</td>
+              <td class="num" style="font-weight: 600;">830</td>
+              <td class="num">11,239</td>
+              <td class="num">7.38%</td>
+              <td>旧URL形式でのインデックス。詳細ページへの転送・案内元</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-orange">販売店案内</span></td>
+              <td style="font-weight: 500;">/gm/gm_store.htm</td>
+              <td class="num" style="font-weight: 600;">512</td>
+              <td class="num">3,656</td>
+              <td class="num">14.00%</td>
+              <td>「グローミン 取扱店」等。購入前スペック確認で回遊</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-gray">トップページ</span></td>
+              <td style="font-weight: 500;">/ （トップ）</td>
+              <td class="num" style="font-weight: 600;">489</td>
+              <td class="num">14,208</td>
+              <td class="num">3.44%</td>
+              <td>会社名検索等。メニュー・バナーからの製品詳細移動</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-teal">コラム（成分）</span></td>
+              <td style="font-weight: 500;">/reference/testosterone.htm</td>
+              <td class="num" style="font-weight: 600;">449</td>
+              <td class="num">120,784</td>
+              <td class="num">0.37%</td>
+              <td>「テストステロン」解説。ホルモン補充薬として誘導</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-orange">ブランドサイト</span></td>
+              <td style="font-weight: 500;">/brand/glowmin/</td>
+              <td class="num" style="font-weight: 600;">145</td>
+              <td class="num">6,363</td>
+              <td class="num">2.28%</td>
+              <td>ブランドサイト。製品詳細・添付文書ボタンから遷移</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">検索流入後のサイト内遷移パターン（3大ルート分析）</div>
+      <div class="route-grid">
+        <div class="route-box">
+          <h4>① 指名ダイレクト着地ルート（最短購入層）</h4>
+          <p>「グローミン」「グローミン どこで買える」等で検索し、直接 <code>/product/glowmin.html</code> に着地するルート。全体の約6割を占め、即座にスペック・取扱店確認へ進む高確度ユーザーです。</p>
+          <div class="tag-list">
+            <span class="tag">直接着地: 2,973件</span>
+            <span class="tag">高CTR: 8.15%</span>
+            <span class="tag">購買意欲: 極大</span>
+          </div>
+        </div>
+
+        <div class="route-box">
+          <h4>② お悩み・成分コラム経由ルート（潜在育成層）</h4>
+          <p>「朝立ち」「テストステロン」のコラム（合計4,700回以上のクリック）に着地後、記事内の解決策リンクから本製品詳細へ遷移するルート。GA4のPV数がセッション数の約3倍に膨らんでいる最大の原動力です。</p>
+          <div class="tag-list">
+            <span class="tag">コラム着地: 4,731件</span>
+            <span class="tag">表示回数: 40万回超</span>
+            <span class="tag">教育・送客ハブ</span>
+          </div>
+        </div>
+
+        <div class="route-box">
+          <h4>③ 旧ページ・店舗案内回遊ルート（購入検討層）</h4>
+          <p>旧アドレス（<code>/gm.htm</code>）や店舗一覧（<code>/gm_store.htm</code>）に着地した約1,500件のユーザーが、最新の用法や製品概要を再確認するために詳細ページへ行き来するルートです。</p>
+          <div class="tag-list">
+            <span class="tag">関連頁着地: 1,600件超</span>
+            <span class="tag">スペック確認回遊</span>
+            <span class="tag">店舗相互リンク</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 乖離の要因分析カード -->
     <div class="card">
       <div class="card-title">GA4とサーチコンソールの数値乖離の理由</div>
@@ -320,8 +491,9 @@
     const impressions = [572, 562, 562, 531, 563, 563, 595, 681, 582, 566, 519, 529, 558, 549, 530, 525, 509, 507, 510, 483, 497, 497, 498, 484, 484, 448, 447, 411, 410, 420, 387, 407, 403, 388, 384, 379, 368, 377, 371, 374, 353, 369, 361, 373, 373, 367, 372, 374, 384, 383, 368, 377, 379, 370, 380, 387, 371, 374, 370, 385, 359, 383, 372, 356, 370, 363, 381, 377, 365, 383, 379, 377, 363, 378, 350, 357, 360, 353, 368, 377, 387, 384, 396, 400, 389, 397, 396, 412, 417, 426, 429, 418];
     const ctr = [6.12, 6.58, 6.41, 6.21, 6.22, 6.04, 5.71, 5.58, 6.01, 6.18, 6.36, 5.86, 5.56, 6.38, 6.42, 6.48, 6.88, 6.31, 6.47, 6.0, 7.24, 6.24, 7.43, 7.02, 7.23, 7.59, 7.83, 7.06, 7.56, 7.86, 6.46, 8.11, 8.44, 6.96, 7.29, 7.92, 8.42, 8.49, 7.82, 8.82, 9.35, 9.76, 9.14, 9.65, 9.38, 9.26, 9.68, 7.75, 9.64, 9.66, 8.15, 7.16, 9.76, 9.46, 9.47, 9.04, 8.09, 8.56, 8.38, 7.79, 8.08, 7.83, 8.6, 8.15, 8.11, 8.54, 7.61, 7.43, 7.95, 7.83, 9.23, 8.75, 9.64, 7.94, 8.0, 8.4, 7.78, 8.78, 9.51, 8.75, 8.27, 7.81, 7.83, 7.5, 7.71, 7.56, 7.32, 7.77, 7.19, 7.04, 6.76, 7.89];
 
-    const ctx = document.getElementById('accessChart').getContext('2d');
-    new Chart(ctx, {
+    // 1. 日次アクセス推移チャート
+    const ctxAccess = document.getElementById('accessChart').getContext('2d');
+    new Chart(ctxAccess, {
       type: 'line',
       data: {
         labels: dates,
@@ -382,6 +554,59 @@
             ticks: { stepSize: 5 }
           },
           yCtr: { display: false, min: 0 }
+        }
+      }
+    });
+
+    // 2. 検索流入ハブ比較チャート
+    const ctxHub = document.getElementById('hubChart').getContext('2d');
+    new Chart(ctxHub, {
+      type: 'bar',
+      data: {
+        labels: [
+          '製品詳細(直接着地)',
+          '朝立ちコラム(/npt)',
+          '旧製品頁(/gm)',
+          '取扱店案内(/gm_store)',
+          'トップページ(/)',
+          '成分解説(/testosterone)',
+          'ブランドサイト'
+        ],
+        datasets: [
+          {
+            label: '検索クリック数',
+            data: [2973, 4282, 830, 512, 489, 449, 145],
+            backgroundColor: [
+              '#2563eb',
+              '#0d9488',
+              '#f59e0b',
+              '#f97316',
+              '#64748b',
+              '#14b8a6',
+              '#fbbf24'
+            ],
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return '検索クリック数: ' + context.parsed.y.toLocaleString() + ' 回';
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Google検索クリック数（回）' }
+          }
         }
       }
     });
