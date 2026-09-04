@@ -151,46 +151,6 @@
     .badge-teal { background-color: #ccfbf1; color: #0f766e; }
     .badge-orange { background-color: #ffedd5; color: #c2410c; }
     
-    .route-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
-    }
-    .route-box {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 18px;
-      background: #fafafa;
-    }
-    .route-box h4 {
-      font-size: 0.95rem;
-      color: var(--primary);
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .route-box p {
-      font-size: 0.88rem;
-      color: #334155;
-      line-height: 1.6;
-    }
-    .tag-list {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .tag {
-      background: #ffffff;
-      border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-size: 0.78rem;
-      color: #475569;
-    }
-
     .analysis-list {
       display: grid;
       gap: 16px;
@@ -346,14 +306,14 @@
 
     <!-- 検索着地からグローミン詳細へ繋がるサイト内遷移・主要ハブ分析 -->
     <div class="card">
-      <div class="card-title">検索着地から「グローミン詳細」へ繋がる主要ページ</div>
+      <div class="card-title">検索着地からグローミン詳細へ繋がる主要ハブの比較</div>
       <div class="chart-container">
         <canvas id="hubChart"></canvas>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">検索流入ハブ一覧（本ページへの遷移上位ページ）</div>
+      <div class="card-title">検索流入ハブ一覧（本ページへの遷移ポテンシャル上位ページ）</div>
       <div style="overflow-x: auto;">
         <table>
           <thead>
@@ -428,41 +388,6 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">検索流入後のサイト内遷移パターン（3大ルート分析）</div>
-      <div class="route-grid">
-        <div class="route-box">
-          <h4>① 指名ダイレクト着地ルート（最短購入層）</h4>
-          <p>「グローミン」「グローミン どこで買える」等で検索し、直接 <code>/product/glowmin.html</code> に着地するルート。全体の約6割を占め、即座にスペック・取扱店確認へ進む高確度ユーザーです。</p>
-          <div class="tag-list">
-            <span class="tag">直接着地: 2,973件</span>
-            <span class="tag">高CTR: 8.15%</span>
-            <span class="tag">購買意欲: 極大</span>
-          </div>
-        </div>
-
-        <div class="route-box">
-          <h4>② お悩み・成分コラム経由ルート（潜在育成層）</h4>
-          <p>「朝立ち」「テストステロン」のコラム（合計4,700回以上のクリック）に着地後、記事内の解決策リンクから本製品詳細へ遷移するルート。GA4のPV数がセッション数の約3倍に膨らんでいる最大の原動力です。</p>
-          <div class="tag-list">
-            <span class="tag">コラム着地: 4,731件</span>
-            <span class="tag">表示回数: 40万回超</span>
-            <span class="tag">教育・送客ハブ</span>
-          </div>
-        </div>
-
-        <div class="route-box">
-          <h4>③ 旧ページ・店舗案内回遊ルート（購入検討層）</h4>
-          <p>旧アドレス（<code>/gm.htm</code>）や店舗一覧（<code>/gm_store.htm</code>）に着地した約1,500件のユーザーが、最新の用法や製品概要を再確認するために詳細ページへ行き来するルートです。</p>
-          <div class="tag-list">
-            <span class="tag">関連頁着地: 1,600件超</span>
-            <span class="tag">スペック確認回遊</span>
-            <span class="tag">店舗相互リンク</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- 乖離の要因分析カード -->
     <div class="card">
       <div class="card-title">GA4とサーチコンソールの数値乖離の理由</div>
@@ -471,7 +396,7 @@
           <div class="analysis-item-title">① 到達前の参照元（流入経路）の違いと別検索エンジンの存在</div>
           <div class="analysis-item-content">
             Search Consoleは「Googleの自然検索」のみを記録しますが、GA4の全アクセスにはGoogle以外の多様な流入経路が含まれています。<br>
-            実際には、<strong>Yahoo! 検索やBing検索といったGoogle以外の検索エンジンからの流入が全体の約21%</strong>を占め、さらに<strong>直接アクセス（ブックマーク・履歴等）や外部医療機関サイト等からの流入が約13%</strong>存在します。
+            実際には、<strong>Yahoo! 検索やBing検索といったGoogle以外の検索エンジンからの流入が全体の約21%</strong>を占め、さらに<strong>直接アクセス（ブックマーク・履歴等）や外部医療機関サイト等からの流入が約13%</strong>存在します。これらの到達前メディアのボリュームを切り分けることで、Google検索数とサイト全体アクセス数との乖離が説明できます。
           </div>
         </div>
 
