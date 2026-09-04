@@ -80,7 +80,7 @@
       font-size: 0.9rem;
       cursor: pointer;
       outline: none;
-    }}
+    }
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -170,39 +170,54 @@
       white-space: nowrap;
     }
     .badge-primary { background-color: #dbeafe; color: #1d4ed8; }
-    .badge-gray { background-color: #f1f5f9; color: #64748b; }
-    .badge-blue { background-color: #dbeafe; color: #1d4ed8; }
-    .badge-teal { background-color: #ccfbf1; color: #0f766e; }
-    .badge-orange { background-color: #ffedd5; color: #c2410c; }
-    .badge-purple { background-color: #f3e8ff; color: #7e22ce; }
     .badge-green { background-color: #dcfce7; color: #15803d; }
-    
-    .analysis-list {
-      display: grid;
-      gap: 16px;
+
+    /* アコーディオン用スタイル */
+    .clickable-row {
+      cursor: pointer;
+      user-select: none;
     }
-    .analysis-item {
-      background: #f8fafc;
-      border-left: 4px solid var(--primary-light);
-      padding: 16px;
-      border-radius: 0 8px 8px 0;
+    .clickable-row:hover {
+      background-color: #f0fdf4 !important;
     }
-    .analysis-item-title {
-      font-size: 0.98rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .toggle-icon {
+      display: inline-block;
+      width: 18px;
+      font-size: 0.75rem;
+      transition: transform 0.2s ease;
+      color: #64748b;
     }
-    .analysis-item-content {
-      font-size: 0.9rem;
-      color: #334155;
-      line-height: 1.65;
+    .expanded .toggle-icon {
+      transform: rotate(90deg);
+      color: #15803d;
     }
-    .analysis-item-content strong {
-      color: #0f172a;
+    .destination-row {
+      display: none;
+      background-color: #f8fafc;
+    }
+    .destination-row.show {
+      display: table-row;
+    }
+    .destination-box {
+      padding: 12px 16px 12px 32px;
+      border-left: 3px solid #10b981;
+      margin: 4px 0;
+      background: #ffffff;
+      border-radius: 0 6px 6px 0;
+    }
+    .dest-table {
+      width: 100%;
+      margin-top: 4px;
+      font-size: 0.85rem;
+    }
+    .dest-table th {
+      padding: 6px 10px;
+      background-color: #f1f5f9;
+      font-size: 0.8rem;
+    }
+    .dest-table td {
+      padding: 6px 10px;
+      border-bottom: 1px dashed #e2e8f0;
     }
   </style>
 </head>
@@ -210,7 +225,7 @@
   <div class="container">
     <header class="header">
       <div>
-        <h1>https://daito-p.co.jp/のアクセス分析</h1>
+        <h1>https://daito-p.co.jp/product/glowmin.htmlのアクセス分析</h1>
         <div class="subtitle" id="reportSubtitle">Google Search Console パフォーマンス分析レポート（期間: 2026/06/01 〜 2026/08/31 ※wwwあり・なし合算値）</div>
       </div>
       <div class="period-selector-wrapper">
@@ -251,81 +266,133 @@
       </div>
     </div>
 
-    <!-- 指定主要検索クエリ分析 -->
+    <!-- 指定主要検索クエリ分析（アコーディオン展開対応） -->
     <div class="card">
       <div class="card-title">
-        <span>指定主要検索クエリのアクセス実績（テストステロン・ホルモン・塗り薬関連）</span>
-        <span class="badge badge-purple" style="font-weight: normal;">Search Console実績値</span>
+        <span>指定主要検索クエリのアクセス実績</span>
       </div>
       <div style="overflow-x: auto;">
         <table>
           <thead>
             <tr>
               <th style="width: 60px;">No</th>
-              <th>指定検索クエリ</th>
-              <th class="num" style="width: 130px;">検索クリック数</th>
+              <th>指定検索クエリ（クリックで遷移先を展開）</th>
+              <th class="num" style="width: 140px;">検索クリック数</th>
               <th class="num" style="width: 140px;">検索表示回数</th>
-              <th class="num" style="width: 110px;">CTR</th>
-              <th class="num" style="width: 110px;">平均掲載順位</th>
-              <th>検索ユーザーの意図と主要な着地先</th>
+              <th class="num" style="width: 120px;">CTR</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><span class="badge badge-primary">1</span></td>
-              <td style="font-weight: 600;">テストステロン</td>
-              <td class="num" style="color: #1d4ed8; font-weight: 600;">293</td>
-              <td class="num">70,559</td>
-              <td class="num">0.42%</td>
-              <td class="num">6.13位</td>
-              <td>成分の基礎知識検索。解説コラム（/reference/testosterone.htm）に着地後、製品へ回遊</td>
-            </tr>
-            <tr style="background-color: #f0fdf4;">
-              <td><span class="badge badge-green">2</span></td>
-              <td style="font-weight: 600; color: #15803d;">テストステロン 塗り薬</td>
+            <!-- テストステロン 塗り薬 -->
+            <tr class="clickable-row" onclick="toggleDestination('dest-testo')">
+              <td><span class="badge badge-green">1</span></td>
+              <td style="font-weight: 600; color: #15803d;">
+                <span class="toggle-icon" id="icon-dest-testo">▶</span>
+                テストステロン 塗り薬
+              </td>
               <td class="num" style="color: #15803d; font-weight: 700;">102</td>
               <td class="num">730</td>
               <td class="num" style="color: #15803d; font-weight: 600;">13.97%</td>
-              <td class="num" style="font-weight: 600;">1.68位</td>
-              <td><strong>高購買意図クエリ</strong>。製品詳細ページ（本ページ）が1位台で直接獲得</td>
             </tr>
-            <tr style="background-color: #f0fdf4;">
-              <td><span class="badge badge-green">3</span></td>
-              <td style="font-weight: 600; color: #15803d;">男性ホルモン 塗り薬</td>
+            <tr id="dest-testo" class="destination-row">
+              <td colspan="5" style="padding: 6px 16px 12px 16px;">
+                <div class="destination-box">
+                  <div style="font-weight: 600; font-size: 0.85rem; color: #334155; margin-bottom: 4px;">
+                    【テストステロン 塗り薬】主な着地先・遷移先URL一覧
+                  </div>
+                  <table class="dest-table">
+                    <thead>
+                      <tr>
+                        <th>着地先URL</th>
+                        <th class="num" style="width: 110px;">推定クリック数</th>
+                        <th class="num" style="width: 90px;">割合</th>
+                        <th>ページ概要</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="font-weight: 600; color: #1d4ed8;">https://www.daito-p.co.jp/product/glowmin.html</td>
+                        <td class="num" style="font-weight: 600;">約 92 回</td>
+                        <td class="num">90.2%</td>
+                        <td>グローミン製品詳細ページ（本命着地先）</td>
+                      </tr>
+                      <tr>
+                        <td>https://www.daito-p.co.jp/gm.htm</td>
+                        <td class="num">約 7 回</td>
+                        <td class="num">6.9%</td>
+                        <td>旧グローミン製品概要ページ</td>
+                      </tr>
+                      <tr>
+                        <td>https://www.daito-p.co.jp/reference/merit_of_ointment</td>
+                        <td class="num">約 3 回</td>
+                        <td class="num">2.9%</td>
+                        <td>塗り薬のメリット解説コラム</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 男性ホルモン 塗り薬 -->
+            <tr class="clickable-row" onclick="toggleDestination('dest-dansei')">
+              <td><span class="badge badge-green">2</span></td>
+              <td style="font-weight: 600; color: #15803d;">
+                <span class="toggle-icon" id="icon-dest-dansei">▶</span>
+                男性ホルモン 塗り薬
+              </td>
               <td class="num" style="color: #15803d; font-weight: 700;">57</td>
               <td class="num">398</td>
               <td class="num" style="color: #15803d; font-weight: 600;">14.32%</td>
-              <td class="num" style="font-weight: 600;">1.47位</td>
-              <td><strong>高購買意図クエリ</strong>。本ページおよび概要ページが直接クリックを獲得</td>
             </tr>
-            <tr>
-              <td><span class="badge badge-primary">4</span></td>
-              <td style="font-weight: 600;">男性ホルモン</td>
-              <td class="num" style="color: #1d4ed8; font-weight: 600;">20</td>
-              <td class="num">5,539</td>
-              <td class="num">0.36%</td>
-              <td class="num">11.49位</td>
-              <td>一般情報収集。ヘルスケア情報一覧やコラム記事が主な受け皿</td>
-            </tr>
-            <tr>
-              <td><span class="badge badge-primary">5</span></td>
-              <td style="font-weight: 600;">塗り薬</td>
-              <td class="num" style="color: #1d4ed8; font-weight: 600;">4</td>
-              <td class="num">32</td>
-              <td class="num">12.50%</td>
-              <td class="num">1.84位</td>
-              <td>塗り薬のメリット解説ページ（/reference/merit_of_ointment）等に着地</td>
+            <tr id="dest-dansei" class="destination-row">
+              <td colspan="5" style="padding: 6px 16px 12px 16px;">
+                <div class="destination-box">
+                  <div style="font-weight: 600; font-size: 0.85rem; color: #334155; margin-bottom: 4px;">
+                    【男性ホルモン 塗り薬】主な着地先・遷移先URL一覧
+                  </div>
+                  <table class="dest-table">
+                    <thead>
+                      <tr>
+                        <th>着地先URL</th>
+                        <th class="num" style="width: 110px;">推定クリック数</th>
+                        <th class="num" style="width: 90px;">割合</th>
+                        <th>ページ概要</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="font-weight: 600; color: #1d4ed8;">https://www.daito-p.co.jp/product/glowmin.html</td>
+                        <td class="num" style="font-weight: 600;">約 48 回</td>
+                        <td class="num">84.2%</td>
+                        <td>グローミン製品詳細ページ（本命着地先）</td>
+                      </tr>
+                      <tr>
+                        <td>https://www.daito-p.co.jp/gm.htm</td>
+                        <td class="num">約 6 回</td>
+                        <td class="num">10.5%</td>
+                        <td>旧グローミン製品概要ページ</td>
+                      </tr>
+                      <tr>
+                        <td>https://www.daito-p.co.jp/brand/glowmin/</td>
+                        <td class="num">約 3 回</td>
+                        <td class="num">5.3%</td>
+                        <td>グローミン公式ブランドサイト</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- /product/glowmin.htmlへアクセスした検索クエリ高精度推定 -->
+    <!-- /product/glowmin.htmlへアクセスした検索クエリ -->
     <div class="card">
       <div class="card-title">
         <span>「/product/glowmin.html」へ到達した主要検索クエリ</span>
-        <span class="badge badge-blue">直接着地 2,978回 ＋ サイト内回遊</span>
       </div>
       <div style="overflow-x: auto;">
         <table>
@@ -333,211 +400,92 @@
             <tr>
               <th style="width: 50px;">順位</th>
               <th>検索クエリ</th>
-              <th>クエリ種別</th>
-              <th class="num" style="width: 140px;">GSC全体クリック数</th>
-              <th class="num" style="width: 140px;">本ページ推定到達数</th>
-              <th class="num" style="width: 110px;">到達寄与率</th>
-              <th>流入経路と推定根拠</th>
+              <th class="num" style="width: 150px;">GSC全体クリック数</th>
+              <th class="num" style="width: 150px;">本ページ推定到達数</th>
+              <th class="num" style="width: 120px;">到達寄与率</th>
             </tr>
           </thead>
           <tbody>
-            <tr style="background-color: #eff6ff;">
+            <tr>
               <td><span class="badge badge-primary">1</span></td>
               <td style="font-weight: 600;">グローミン</td>
-              <td><span class="badge badge-blue">指名検索</span></td>
               <td class="num">1,360</td>
               <td class="num" style="color: #1d4ed8; font-weight: 700;">約 1,020 回</td>
               <td class="num">75.0%</td>
-              <td>本命製品詳細としてSERPで最優先クリックされ、直接ランディング</td>
             </tr>
             <tr>
               <td><span class="badge badge-primary">2</span></td>
               <td style="font-weight: 600;">グローミン どこで 買える</td>
-              <td><span class="badge badge-teal">購入意図</span></td>
               <td class="num">149</td>
               <td class="num" style="color: #1d4ed8; font-weight: 700;">約 110 回</td>
               <td class="num">73.8%</td>
-              <td>直接着地および販売店一覧（/gm/gm_store.htm）からの相互回遊</td>
             </tr>
             <tr>
               <td><span class="badge badge-primary">3</span></td>
               <td style="font-weight: 600;">グローミン 薬局</td>
-              <td><span class="badge badge-teal">購入意図</span></td>
               <td class="num">132</td>
               <td class="num" style="color: #1d4ed8; font-weight: 700;">約 105 回</td>
               <td class="num">79.5%</td>
-              <td>薬局販売確認ニーズ。本ページの取扱施設案内へ直接着地</td>
             </tr>
-            <tr style="background-color: #f0fdf4;">
+            <tr>
               <td><span class="badge badge-green">4</span></td>
               <td style="font-weight: 600; color: #15803d;">テストステロン 塗り薬</td>
-              <td><span class="badge badge-green">一般名購入</span></td>
               <td class="num">102</td>
               <td class="num" style="color: #15803d; font-weight: 700;">約 92 回</td>
               <td class="num">90.2%</td>
-              <td><strong>掲載順位1.68位</strong>。該当する唯一の一般用OTC製品として直接着地</td>
             </tr>
             <tr>
               <td><span class="badge badge-primary">5</span></td>
               <td style="font-weight: 600;">グローミン軟膏</td>
-              <td><span class="badge badge-blue">指名剤形</span></td>
               <td class="num">77</td>
               <td class="num" style="color: #1d4ed8; font-weight: 700;">約 65 回</td>
               <td class="num">84.4%</td>
-              <td>クリーム/軟膏の確認。用法用量情報への直接着地</td>
             </tr>
-            <tr style="background-color: #f0fdf4;">
+            <tr>
               <td><span class="badge badge-green">6</span></td>
               <td style="font-weight: 600; color: #15803d;">男性ホルモン 塗り薬</td>
-              <td><span class="badge badge-green">一般名購入</span></td>
               <td class="num">57</td>
               <td class="num" style="color: #15803d; font-weight: 700;">約 48 回</td>
               <td class="num">84.2%</td>
-              <td><strong>掲載順位1.47位</strong>。製品紹介ページとして直接獲得</td>
             </tr>
             <tr>
               <td><span class="badge badge-primary">7</span></td>
-              <td style="font-weight: 600;">テストステロン（単体）</td>
-              <td><span class="badge badge-purple">情報収集（回遊）</span></td>
+              <td style="font-weight: 600;">テストステロン</td>
               <td class="num">293</td>
               <td class="num" style="color: #1d4ed8; font-weight: 700;">約 45 回</td>
               <td class="num">15.4%</td>
-              <td>コラム（/reference/testosterone.htm）経由でのサイト内遷移（前のページ経由）</td>
             </tr>
             <tr>
               <td><span class="badge badge-primary">8</span></td>
               <td style="font-weight: 600;">グローミン ウエルシア</td>
-              <td><span class="badge badge-teal">店舗指名</span></td>
               <td class="num">34</td>
               <td class="num" style="color: #1d4ed8; font-weight: 700;">約 28 回</td>
               <td class="num">82.4%</td>
-              <td>取扱ドラッグストア確認。製品詳細着地後に販売店リンクへ遷移</td>
             </tr>
             <tr>
               <td><span class="badge badge-primary">9</span></td>
-              <td style="font-weight: 600;">ぐろーみん（ひらがな）</td>
-              <td><span class="badge badge-blue">指名検索</span></td>
+              <td style="font-weight: 600;">ぐろーみん</td>
               <td class="num">24</td>
               <td class="num" style="color: #1d4ed8; font-weight: 700;">約 20 回</td>
               <td class="num">83.3%</td>
-              <td>ひらがな指名検索。製品詳細ページが直接獲得</td>
             </tr>
             <tr>
               <td><span class="badge badge-primary">10</span></td>
               <td style="font-weight: 600;">あさだち / 朝立ち 理由</td>
-              <td><span class="badge badge-purple">症状悩み（回遊）</span></td>
               <td class="num">602</td>
               <td class="num" style="color: #1d4ed8; font-weight: 700;">約 55 回</td>
               <td class="num">9.1%</td>
-              <td>コラム（/npt.htm：クリック4,282件）の本文内解決策リンクから本ページへ流入</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- 検索着地からグローミン詳細へ繋がるサイト内遷移・主要ハブ分析 -->
+    <!-- 検索着地からグローミン詳細へ繋がるサイト内遷移・主要ハブ分析（チャート） -->
     <div class="card">
       <div class="card-title">検索着地からグローミン詳細へ繋がる主要ハブの比較</div>
       <div class="chart-container">
         <canvas id="hubChart"></canvas>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">検索流入ハブ一覧（本ページへの遷移ポテンシャル上位ページ）</div>
-      <div style="overflow-x: auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>分類</th>
-              <th>着地ページURL</th>
-              <th class="num">検索クリック数</th>
-              <th class="num">検索表示回数</th>
-              <th class="num">CTR</th>
-              <th>主な検索クエリ・役割</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr style="background-color: #eff6ff;">
-              <td><span class="badge badge-blue">直接着地（本命）</span></td>
-              <td style="font-weight: 600;">/product/glowmin.html</td>
-              <td class="num" style="color: #1d4ed8; font-weight: 700;">2,973</td>
-              <td class="num">36,466</td>
-              <td class="num">8.15%</td>
-              <td>「グローミン」「テストステロン 塗り薬」等、指名購入クエリ</td>
-            </tr>
-            <tr>
-              <td><span class="badge badge-teal">コラム（潜在層）</span></td>
-              <td style="font-weight: 500;">/npt.htm</td>
-              <td class="num" style="font-weight: 600;">4,282</td>
-              <td class="num">280,652</td>
-              <td class="num">1.53%</td>
-              <td>「あさだち」「朝立ち 理由」等の巨大PVコラム。解決策導線</td>
-            </tr>
-            <tr>
-              <td><span class="badge badge-orange">旧製品情報</span></td>
-              <td style="font-weight: 500;">/gm.htm</td>
-              <td class="num" style="font-weight: 600;">830</td>
-              <td class="num">11,239</td>
-              <td class="num">7.38%</td>
-              <td>旧URL形式でのインデックス。詳細ページへの転送・案内元</td>
-            </tr>
-            <tr>
-              <td><span class="badge badge-orange">販売店案内</span></td>
-              <td style="font-weight: 500;">/gm/gm_store.htm</td>
-              <td class="num" style="font-weight: 600;">512</td>
-              <td class="num">3,656</td>
-              <td class="num">14.00%</td>
-              <td>「グローミン 取扱店」等。購入前スペック確認で回遊</td>
-            </tr>
-            <tr>
-              <td><span class="badge badge-gray">トップページ</span></td>
-              <td style="font-weight: 500;">/ （トップ）</td>
-              <td class="num" style="font-weight: 600;">489</td>
-              <td class="num">14,208</td>
-              <td class="num">3.44%</td>
-              <td>会社名検索等。メニュー・バナーからの製品詳細移動</td>
-            </tr>
-            <tr>
-              <td><span class="badge badge-teal">コラム（成分）</span></td>
-              <td style="font-weight: 500;">/reference/testosterone.htm</td>
-              <td class="num" style="font-weight: 600;">449</td>
-              <td class="num">120,784</td>
-              <td class="num">0.37%</td>
-              <td>「テストステロン」解説。ホルモン補充薬として誘導</td>
-            </tr>
-            <tr>
-              <td><span class="badge badge-orange">ブランドサイト</span></td>
-              <td style="font-weight: 500;">/brand/glowmin/</td>
-              <td class="num" style="font-weight: 600;">145</td>
-              <td class="num">6,363</td>
-              <td class="num">2.28%</td>
-              <td>ブランドサイト。製品詳細・添付文書ボタンから遷移</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 乖離の要因分析カード -->
-    <div class="card">
-      <div class="card-title">GA4とサーチコンソールの数値乖離の理由</div>
-      <div class="analysis-list">
-        <div class="analysis-item">
-          <div class="analysis-item-title">① 到達前の参照元（流入経路）の違いと別検索エンジンの存在</div>
-          <div class="analysis-item-content">
-            Search Consoleは「Googleの自然検索」のみを記録しますが、GA4の全アクセスにはGoogle以外の多様な流入経路が含まれています。<br>
-            実際には、<strong>Yahoo! 検索やBing検索といったGoogle以外の検索エンジンからの流入が全体の約21%</strong>を占め、さらに<strong>直接アクセス（ブックマーク・履歴等）や外部医療機関サイト等からの流入が約13%</strong>存在します。これらの到達前メディアのボリュームを切り分けることで、Google検索数とサイト全体アクセス数との乖離が説明できます。
-          </div>
-        </div>
-
-        <div class="analysis-item">
-          <div class="analysis-item-title">② サイト内回遊および閲覧再開に伴うセッション・PVの増加</div>
-          <div class="analysis-item-content">
-            検索から本ページへ直接着地したアクセスだけでなく、関連コラム記事など「サイト内の前のページ」を経由して閲覧された回数や、ページ内リンクを回遊して再度読み込まれた回数が加わるため、全体の表示回数（PV）が大きく膨らみます。また、同一タブで30分以上放置した後に閲覧を再開した場合、GA4では新規セッションとして追加計上されることも、検索クリック実数よりセッション数が多くなる要因です。
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -728,6 +676,20 @@
       accessChart.data.datasets[1].data = data.clicks;
       accessChart.data.datasets[2].data = data.ctr;
       accessChart.update();
+    }
+
+    // アコーディオン開閉関数
+    function toggleDestination(rowId) {
+      const row = document.getElementById(rowId);
+      const icon = document.getElementById('icon-' + rowId);
+      if (!row) return;
+      if (row.classList.contains('show')) {
+        row.classList.remove('show');
+        if (icon) icon.parentElement.parentElement.classList.remove('expanded');
+      } else {
+        row.classList.add('show');
+        if (icon) icon.parentElement.parentElement.classList.add('expanded');
+      }
     }
   </script>
 </body>
