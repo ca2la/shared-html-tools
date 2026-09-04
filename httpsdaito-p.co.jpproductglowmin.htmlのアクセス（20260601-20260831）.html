@@ -297,23 +297,23 @@
       <div class="card-title">GA4とサーチコンソールの数値乖離の理由</div>
       <div class="analysis-list">
         <div class="analysis-item">
-          <div class="analysis-item-title">① GSCの登録プロパティ</div>
+          <div class="analysis-item-title">① GSC登録プロパティの合算による解決</div>
           <div class="analysis-item-content">
-            GSCの登録プロパティは「https://daito-p.co.jp」のプロパティです。実際のWebサイトやGoogle検索のインデックスは「wwwあり」で機能しているため、GSC（wwwなし）側には正規化から漏れたアクセスしか記録されていません。
+            当初確認していたGSCは「wwwなし」プロパティであったため、正規化から外れたわずかなアクセスしか記録されていませんでした。正規アドレスである「wwwあり」プロパティを合算したことで、検索経由のクリック実績は本来の約3,000回へと修正され、GA4の検索ユーザー実数（約3,500人）と整合しました。
           </div>
         </div>
 
         <div class="analysis-item">
-          <div class="analysis-item-title">② Google検索結果の露出の集中</div>
+          <div class="analysis-item-title">② Google検索以外の多様な流入チャネル</div>
           <div class="analysis-item-content">
-            Google検索結果の露出自体が「他ページ」に集中しているためGoogle検索で表示・クリックされているのは製品詳細ページではなく、「販売店一覧ページ」や「ブランドサイト」が占めています。検索結果一覧に製品詳細ページ自体がほとんど露出していないため、このURLに対して発生した検索クエリのクリック数も5回にとどまっています。
+            GSCは「Googleの自然検索」のみを計測します。一方、GA4の全アクセスにはYahoo! 検索、直接アクセス（ブックマーク・履歴・URL直打ち）、Bing検索、外部医療機関やポータルサイトのリンク経由など、Google検索以外のあらゆる流入が含まれているため、サイト全体の数値が大きく上回ります。
           </div>
         </div>
 
         <div class="analysis-item">
-          <div class="analysis-item-title">③ GA4特有のカウント仕様</div>
+          <div class="analysis-item-title">③ 閲覧再開に伴うセッション分割と計測定義の差</div>
           <div class="analysis-item-content">
-            GA4特有の仕様で、過去にGoogle検索から訪れたユーザーが、後日ブックマークやブラウザの開きっぱなしのタブから直接再訪した場合でも、流入元を「Google自然検索」として引き継いでカウントします。そのため、その日にGoogle検索を経由していなくてもGA4上ではGoogle検索のアクセスとして加算されます。
+            Google検索からページを開いた後、30分以上放置して離席し、同一タブで閲覧やスクロールを再開した場合、GA4ではセッションタイムアウトにより「新規セッション」として追加計上されます。1回の検索クリックから複数セッションが発生することや、Googleアプリ等からの流入判定が加わることで、クリック数よりもセッション数が多くカウントされます。
           </div>
         </div>
       </div>
